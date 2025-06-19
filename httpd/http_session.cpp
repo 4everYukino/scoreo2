@@ -14,7 +14,8 @@ void HTTP_Session::run()
 
 void HTTP_Session::run_i()
 {
-    http::async_read(sock_, buff_, req_, [this](beast::error_code ec, std::size_t bytes_transferred) {
+    http::async_read(sock_, buff_, req_, [this](beast::error_code ec,
+                                                std::size_t /* bytes_transferred */) {
         if (ec) {
             // Log
             return;
@@ -28,7 +29,8 @@ void HTTP_Session::handle_request()
 {
     Router::instance()->dispatch(req_, res_);
 
-    http::async_write(sock_, res_, [this](beast::error_code ec, std::size_t bytes_transferred) {
+    http::async_write(sock_, res_, [this](beast::error_code ec,
+                                          std::size_t /* bytes_transferred */) {
         if (ec) {
             // Log
             return;

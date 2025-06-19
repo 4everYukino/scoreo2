@@ -1,3 +1,9 @@
 [submodule "src/json"]
 	path = src/json
 	url = git@github.com:nlohmann/json.git
+[submodule "src/spdlog"]
+	path = src/spdlog
+	url = git@github.com:gabime/spdlog.git
+[submodule "src/fmt"]
+	path = src/fmt
+	url = git@github.com:fmtlib/fmt.git
