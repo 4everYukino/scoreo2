@@ -1,88 +1,131 @@
 #include "pool_based_room.h"
 
-#include "persistence/persistency_helper.h"
+#include "rtlib/each_kv.h"
+
+#include <algorithm>
 
 using namespace std;
+using namespace rtlib;
 
-bool Pool_Based_Room::init(const string& uuid, const string& player)
+#define PLAYER_LIMITS 9
+
+bool Pool_Based_Room::init(const string& uuid, const Player_ID& first_player_uuid)
 {
     uuid_ = uuid;
-    if (!players_.emplace(player, 0).second) {
-        // Log
-        return false;
-    }
 
-    return true;
-}
+    profiles_.clear();
 
-bool Pool_Based_Room::scoring(const string& player,
-                              unsigned int score)
-{
-    if (!players_.contains(player)) {
-        // Log
-        return false;
-    }
-
-    players_.at(player) -= score;
-    pool_score_ += score;
-
-    Action act = {
-        player,
-        TABLE_ALIAS,
-        score
+    profiles_[POOL_DUMMY_ID] = {
+        POOL_DUMMY_ID,
+        PLAYER_INITIAL_SCORE
     };
-    game_.record(act);
 
-    return true;
-}
-
-bool Pool_Based_Room::retrieve(const string& player,
-                               unsigned int score)
-{
-    if (!players_.contains(player)) {
-        // Log
-        return false;
-    }
-
-    if (score > pool_score_) {
-        // Log
-        return false;
-    }
-
-    players_.at(player) += score;
-    pool_score_ -= score;
-
-    Action act = {
-        TABLE_ALIAS,
-        player,
-        score
+    profiles_[first_player_uuid] = {
+        first_player_uuid,
+        PLAYER_INITIAL_SCORE
     };
-    game_.record(act);
-
-    if (!pool_score_)
-        next();
 
     return true;
 }
 
-void Pool_Based_Room::next()
+bool Pool_Based_Room::join(const Player_ID& player_uuid)
 {
-    history_.record(game_);
+    if (profiles_.count(player_uuid)) {
+        // Log
 
-    game_.next();
+        return false;
+    }
+
+    if (profiles_.size() >= PLAYER_LIMITS) {
+        // Log
+
+        return false;
+    }
+
+    if (!profiles_.emplace(player_uuid, PLAYER_INITIAL_SCORE).second) {
+        // Log
+
+        return false;
+    }
+
+    return true;
+}
+
+bool Pool_Based_Room::apply_action(const Action& act)
+{
+    const auto& from = act.from;
+    const auto& to = act.to;
+    if (from == to) {
+        // Log
+
+        return false;
+    }
+
+    if (from != POOL_DUMMY_ID && to != POOL_DUMMY_ID) {
+        // Log
+
+        return false;
+    }
+
+    if (from == POOL_DUMMY_ID) {
+        // The player retrieves points from the pool
+    } else {
+        // The player give points to the pool
+    }
+
+    if (!current_game_.apply_action(act)) {
+        // Log
+
+        return false;
+    }
+
+    return true;
+}
+
+bool Pool_Based_Room::next_game()
+{
+    const auto& src = current_game_.get_profiles();
+    if (!all_kv(src, [this](const Player_ID& id, const Player_Profile& prof) {
+        return profiles_.count(id);
+    })) {
+        // Log
+
+        return false;
+    }
+
+    each_kv(src, [this](const Player_ID& id, const Player_Profile& prof) {
+        profiles_.at(id).score += prof.score;
+    });
+
+    current_game_.next();
+
+    return true;
+}
+
+void Pool_Based_Room::record_history()
+{
+    // TODO
 }
 
 bool Pool_Based_Room::dissolve()
 {
-    if (pool_score_ != 0) {
-        // Log.
+    if (pool_score() != 0) {
+        // Log
+
         return false;
     }
 
-    Persistency_Helper h;
-    if (!h.record()) {
-        // Log.
+    return true;
+}
+
+int64_t Pool_Based_Room::pool_score()
+{
+    Player_Profile* pool = current_game_.get(POOL_DUMMY_ID, false);
+    if (!pool) {
+        // Log
+
+        return 0;
     }
 
-    return true;
+    return pool->score;
 }

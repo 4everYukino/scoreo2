@@ -3,6 +3,6 @@
 
 #include "http_def.h"
 
-void set_error(Response& res, http::status stuts, const char* msg);
+void set_error(Response& res, http::status stuts, const char* msg, ...);
 
 #endif

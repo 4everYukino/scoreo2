@@ -5,36 +5,38 @@
 
 #include "pool_based_room.h"
 
-#include "utils/common.h"
-
 #include <memory>
 #include <string>
 #include <unordered_set>
 
+using Room_var = std::shared_ptr<Room>;
+
 class Room_Manager
 {
 public:
-    Room_Manager* instance() {
+    static Room_Manager* instance() {
         static Room_Manager h;
         return &h;
     }
 
-    bool create(const Room_Type& type,
-                std::string& uuid,
-                const std::string& player);
+    Room_Manager(const Room_Manager& other) = delete;
+    Room_Manager& operator=(const Room_Manager& other) = delete;
 
-    bool dissolve(const std::string& uuid);
+    Room_var get(const std::string& room_uuid) const;
+
+    bool create(const Room_Type& type,
+                const Player_ID& first_player_uuid,
+                std::string& room_uuid);
+
+    bool dissolve(const std::string& room_uuid);
 
 private:
     Room_Manager() {
 
     }
 
-    Room_Manager(const Room_Manager& other) = delete;
-    Room_Manager& operator=(const Room_Manager& other) = delete;
-
 private:
-    std::unordered_set<std::unique_ptr<Room>> rooms_;
+    std::unordered_set<Room_var> rooms_;
 };
 
 #endif

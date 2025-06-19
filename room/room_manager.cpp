@@ -3,17 +3,45 @@
 #include <algorithm>
 
 #include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 using namespace std;
 
-bool Room_Manager::create(const Room_Type& type, string& uuid, const string& player)
+Room_var Room_Manager::get(const string& room_uuid) const
 {
-    uuid.clear();
+    auto it = find_if(
+            rooms_.begin(),
+            rooms_.end(),
+            [&room_uuid](const Room_var& r) {
+                return room_uuid == r->uuid();
+            }
+    );
 
-    auto generated = boost::uuids::random_generator()();
-    uuid.assign(generated.begin(), generated.end());
+    if (it == rooms_.end()) {
+        // Log
 
-    unique_ptr<Room> r;
+        return nullptr;
+    }
+
+    return *it;
+}
+
+bool Room_Manager::create(const Room_Type& type,
+                          const Player_ID& first_player_uuid,
+                          string& room_uuid)
+{
+    room_uuid.clear();
+
+    boost::uuids::random_generator g;
+
+    boost::uuids::uuid u = g();
+    room_uuid = boost::uuids::to_string(u);
+    while (get(room_uuid) != nullptr) {
+        u = g();
+        room_uuid = boost::uuids::to_string(u);
+    }
+
+    shared_ptr<Room> r;
     switch (type) {
     case Room_Type::SINGLE_SCORING:
         break;
@@ -22,8 +50,8 @@ bool Room_Manager::create(const Room_Type& type, string& uuid, const string& pla
         break;
 
     case Room_Type::POOL_BASED_SCORING:
-        r = make_unique<Pool_Based_Room>();
-        if (!r->init(uuid, player)) {
+        r = make_shared<Pool_Based_Room>();
+        if (!r || !r->init(room_uuid, first_player_uuid)) {
             // Log
 
             r.reset();
@@ -36,21 +64,25 @@ bool Room_Manager::create(const Room_Type& type, string& uuid, const string& pla
         break;
     }
 
-    return rooms_.emplace(move(r)).second;
-}
-
-bool Room_Manager::dissolve(const string& uuid)
-{
-    auto it = find_if(rooms_.begin(), rooms_.end(), [&uuid](const unique_ptr<Room>& ptr) {
-        return uuid == ptr->uuid();
-    });
-
-    if (it == rooms_.end()) {
+    if (!rooms_.insert(r).second) {
         // Log
+
         return false;
     }
 
-    if (!it->get()->dissolve()) {
+    return true;
+}
+
+bool Room_Manager::dissolve(const string& room_uuid)
+{
+    auto r = get(room_uuid);
+    if (!r) {
+        // Log
+
+        return false;
+    }
+
+    if (r->dissolve()) {
         // Log
         return false;
     }

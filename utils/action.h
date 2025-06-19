@@ -1,14 +1,14 @@
 #ifndef ACTION_H
 #define ACTION_H
 
-#include <string>
+#include "player.h"
 
 struct Action
 {
-    std::string from;
-    std::string to;
-
-    unsigned int score = 0;
+    time_t timestamp = 0;
+    Player_ID from;
+    Player_ID to;
+    uint64_t score = 0;
 };
 
 #endif

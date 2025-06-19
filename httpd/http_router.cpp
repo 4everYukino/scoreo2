@@ -7,7 +7,7 @@ using namespace std;
 bool Router::add(const string& path,
                  HTTP_Handler* handler)
 {
-    if (routes_.contains(path)) {
+    if (routes_.count(path)) {
         // Log
         return false;
     }
@@ -38,7 +38,6 @@ void Router::dispatch(const Request& req, Response& res)
         res.body() = fmt::format("The '{}' is not compiled.", path);
 
         res.prepare_payload();
-
     } else {
         it->second->handle_request(req, res);
     }

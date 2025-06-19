@@ -6,21 +6,24 @@
 class Pool_Based_Room final : public Room
 {
 public:
+    /// {
+
     bool init(const std::string& uuid,
-              const std::string& player) override;
+              const Player_ID& first_player_uuid) override;
 
-    bool scoring(const std::string& player,
-                 unsigned int score);
+    bool join(const Player_ID& player_uuid) override;
 
-    bool retrieve(const std::string& player,
-                  unsigned int score);
+    bool apply_action(const Action& act);
 
-    void next() override;
+    bool next_game() override;
+
+    void record_history() override;
 
     bool dissolve() override;
 
-private:
-    unsigned int pool_score_ = 0;
+    /// }
+
+    int64_t pool_score();
 };
 
 #endif

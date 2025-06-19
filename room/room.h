@@ -6,19 +6,30 @@
 #include <unordered_map>
 
 #include "utils/action.h"
-#include "utils/common.h"
 #include "utils/game.h"
-#include "utils/history.h"
+#include "utils/player.h"
+
+enum class Room_Type
+{
+    UNDEFINED,
+    SINGLE_SCORING,
+    MULTI_SCORING,
+    POOL_BASED_SCORING,
+};
 
 class Room
 {
 public:
     virtual bool init(const std::string& uuid,
-                      const std::string& player) = 0;
+                      const Player_ID& first_player_uuid) = 0;
 
-    bool join(const std::string& player);
+    virtual bool join(const Player_ID& player_uuid) = 0;
 
-    virtual void next() = 0;
+    virtual bool apply_action(const Action& act) = 0;
+
+    virtual bool next_game() = 0;
+
+    virtual void record_history() = 0;
 
     virtual bool dissolve() = 0;
 
@@ -29,10 +40,11 @@ public:
 protected:
     std::string uuid_;
     Room_Type type_ = Room_Type::UNDEFINED;
-    std::unordered_map<std::string, unsigned int> players_;
 
-    Game game_;
-    History history_;
+    /// This profiles belongs to the entire room.
+    std::unordered_map<Player_ID, Player_Profile> profiles_;
+
+    Game current_game_;
 };
 
 #endif
