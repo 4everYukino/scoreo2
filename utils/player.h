@@ -13,6 +13,13 @@ struct Player_Profile
 {
     Player_ID id;
     int64_t score = PLAYER_INITIAL_SCORE;
+
+    Player_Profile() = default;
+
+    Player_Profile(Player_ID i, int64_t s = PLAYER_INITIAL_SCORE)
+        : id(i), score(s) {
+
+    }
 };
 
 #endif

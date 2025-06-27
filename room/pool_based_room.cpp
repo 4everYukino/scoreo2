@@ -42,7 +42,7 @@ bool Pool_Based_Room::join(const Player_ID& player_uuid)
         return false;
     }
 
-    if (!profiles_.emplace(player_uuid, PLAYER_INITIAL_SCORE).second) {
+    if (!profiles_.emplace(player_uuid, Player_Profile(player_uuid)).second) {
         // Log
 
         return false;

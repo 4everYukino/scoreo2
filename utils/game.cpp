@@ -34,7 +34,7 @@ Player_Profile* Game::get(const Player_ID& id,
     }
 
     if (create) {
-        auto [it, inserted] = profiles_.emplace(id, PLAYER_INITIAL_SCORE);
+        auto [it, inserted] = profiles_.emplace(id, Player_Profile(id));
         return &it->second;
     }
 

@@ -19,7 +19,7 @@ bool HTTP_Room_Handler::handle_post(const Request& req, Response& res)
 
     json body;
     try {
-        body.parse(req.body());
+        body = json::parse(req.body());
     } catch (const json::parse_error& e) {
         // Log
 
