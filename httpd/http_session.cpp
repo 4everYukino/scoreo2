@@ -2,9 +2,10 @@
 
 #include "http_router.h"
 
-void HTTP_Session::init(ip::tcp::socket socket)
+HTTP_Session::HTTP_Session(tcp::socket socket)
+    : sock_(std::move(socket))
 {
-    sock_ = std::move(socket);
+
 }
 
 void HTTP_Session::run()
@@ -14,32 +15,53 @@ void HTTP_Session::run()
 
 void HTTP_Session::run_i()
 {
-    http::async_read(sock_, buff_, req_, [this](beast::error_code ec,
-                                                std::size_t /* bytes_transferred */) {
-        if (ec) {
-            // Log
-            return;
-        }
+    req_.clear();
+    http::async_read(
+        sock_,
+        buff_,
+        req_,
+        [self = shared_from_this()](beast::error_code ec,
+                                    std::size_t /* bytes_transferred */) {
+            if (ec) {
+                // Log
+                return;
+            }
 
-        handle_request();
+            self->handle_request();
     });
 }
 
 void HTTP_Session::handle_request()
 {
+    res_.clear();
+
     Router::instance()->dispatch(req_, res_);
 
-    http::async_write(sock_, res_, [this](beast::error_code ec,
-                                          std::size_t /* bytes_transferred */) {
-        if (ec) {
-            // Log
-            return;
-        }
+    http::async_write(
+        sock_,
+        res_,
+        [self = shared_from_this()](beast::error_code ec,
+                                    std::size_t /* bytes_transferred */) {
+            if (ec) {
+                // Log
 
-        if (res_.keep_alive()) {
-            req_.clear();
-            res_.clear();
-            run();
-        }
+                self->close();
+                return;
+            }
+
+            if (self->res_.keep_alive()) {
+                self->run_i();
+            } else {
+                self->close();
+            }
     });
+}
+
+void HTTP_Session::close()
+{
+    beast::error_code ec;
+
+    sock_.shutdown(tcp::socket::shutdown_send, ec);
+
+    sock_.close(ec);
 }

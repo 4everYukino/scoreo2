@@ -1,8 +1,10 @@
 #include "http_room_handler.h"
 
-#include "http_error.h"
+#include "http_utils.h"
 
 #include "room/room_manager.h"
+
+#include <spdlog/spdlog.h>
 
 using namespace std;
 using namespace nlohmann;
@@ -21,7 +23,7 @@ bool HTTP_Room_Handler::handle_post(const Request& req, Response& res)
     try {
         body = json::parse(req.body());
     } catch (const json::parse_error& e) {
-        // Log
+        spdlog::error("Failed to parse JSON body, {}", e.what());
 
         set_error(res,
                   http::status::internal_server_error,
@@ -31,7 +33,7 @@ bool HTTP_Room_Handler::handle_post(const Request& req, Response& res)
     }
 
     if (!body.is_object()) {
-        // Log
+        spdlog::error("Unexpected JSON body type '{}', it should be an Object.", body.type_name());
 
         set_error(res,
                   http::status::bad_request,
@@ -53,7 +55,7 @@ bool HTTP_Room_Handler::handle_post(const Request& req, Response& res)
 
     set_error(res,
               http::status::bad_request,
-              "Not supported action '%s'.", action.c_str());
+              "Not supported action '{}'.", action);
 
     return false;
 }

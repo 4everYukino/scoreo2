@@ -1,0 +1,16 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+/* PROJECT_NAME */
+#define PROJECT_NAME "@PROJECT_NAME@"
+
+/* VAR_PREFIX */
+#define VAR_PREFIX "@VAR_PREFIX@"
+
+/* VAR_LOG_PREFIX */
+#define VAR_LOG_PREFIX VAR_PREFIX "/log"
+
+/* LOG_DIR_PREFIX */
+#define LOG_DIR_PREFIX VAR_LOG_PREFIX "/" PROJECT_NAME
+
+#endif
