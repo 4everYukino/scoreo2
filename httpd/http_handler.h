@@ -1,7 +1,7 @@
 #ifndef HTTP_HANDLER_H
 #define HTTP_HANDLER_H
 
-#include "http_def.h"
+#include "http_common.h"
 
 class HTTP_Handler
 {

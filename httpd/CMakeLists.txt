@@ -17,7 +17,7 @@ target_sources(httpd PRIVATE
     http_room_handler.cpp
 )
 
-target_link_libraries(httpd PRIVATE fmt nlohmann_json room)
+target_link_libraries(httpd PRIVATE fmt nlohmann_json room spdlog)
 
 # }
 

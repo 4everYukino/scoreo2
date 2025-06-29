@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
-PROJECT(scoreo)
+PROJECT(scoreo2)
 
 set(CMAKE_CXX_STANDARD 17)
 set(BUILD_SHARED_LIBS ON)
@@ -31,9 +31,22 @@ endif()
 
 # third-party modules {
 add_subdirectory(src/fmt)
+
 add_subdirectory(src/json)
+
+set(SPDLOG_INSTALL ON)
+set(SPDLOG_BUILD_SHARED ON)
+set(SPDLOG_BUILD_PIC TRUE)
 add_subdirectory(src/spdlog)
 # }
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
+set(VAR_PREFIX "/var")
+
+configure_file(
+  ${CMAKE_SOURCE_DIR}/config.h.in
+  ${CMAKE_BINARY_DIR}/config.h
+  @ONLY
+)

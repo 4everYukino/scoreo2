@@ -2,18 +2,15 @@
 
 #include <fmt/core.h>
 
+#include <spdlog/spdlog.h>
+
 using namespace std;
 
 bool Router::add(const string& path,
                  HTTP_Handler* handler)
 {
-    if (routes_.count(path)) {
-        // Log
-        return false;
-    }
-
     if (!routes_.emplace(path, handler).second) {
-        // Log
+        spdlog::error("Failed to add '{}' into router, it it already exists.", path);
         return false;
     }
 
@@ -26,6 +23,8 @@ void Router::dispatch(const Request& req, Response& res)
 
     size_t pos = target.find('?');
     const string path = target.substr(0, pos);
+
+    // Log
 
     auto it = routes_.find(path);
 
