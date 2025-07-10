@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -euo pipefail
 
 PROJECT_NAME="scoreo2"
@@ -7,7 +7,8 @@ BUILD_SUBDIR="${BUILD_DIR}/build"
 STAGING_DIR="${BUILD_DIR}/build/_package"
 INSTALL_PREFIX="/opt/${PROJECT_NAME}"
 
-rm -rf "${BUILD_SUBDIR}" "${PROJECT_NAME}.tar.gz"
+# rm -rf "${BUILD_SUBDIR}"
+rm -f "${PROJECT_NAME}.tar.gz"
 
 mkdir -p "${BUILD_SUBDIR}"
 mkdir -p "${STAGING_DIR}"
@@ -15,12 +16,12 @@ mkdir -p "${STAGING_DIR}"
 SECONDS=0
 
 cd "${BUILD_SUBDIR}"
-cmake -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" -DCMAKE_VERBOSE_MAKEFILE=ON ..
+cmake -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=ON ..
 make -j"$(nproc)"
 make DESTDIR="${STAGING_DIR}" install
 
 cd "${STAGING_DIR}"
-tar -czf "${BUILD_DIR}/${PROJECT_NAME}.tar.gz" opt
+tar -czf "${BUILD_DIR}/${PROJECT_NAME}.tar.gz" lib opt
 
 duration=$SECONDS
 

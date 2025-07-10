@@ -10,6 +10,8 @@ include_directories(
     ${CMAKE_SOURCE_DIR}
 )
 
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
+
 add_subdirectory(server)
 add_subdirectory(utils)
 
@@ -49,4 +51,17 @@ configure_file(
   ${CMAKE_SOURCE_DIR}/config.h.in
   ${CMAKE_BINARY_DIR}/config.h
   @ONLY
+)
+
+configure_file(
+  ${CMAKE_SOURCE_DIR}/${PROJECT_NAME}.service.in
+  ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.service
+  @ONLY
+)
+
+set(SYSTEMD_UNIT_DIR "/lib/systemd/system")
+
+install(
+  FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.service"
+  DESTINATION "${SYSTEMD_UNIT_DIR}"
 )
