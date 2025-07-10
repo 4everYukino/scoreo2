@@ -1,0 +1,12 @@
+[Unit]
+Description=@PROJECT_NAME@
+After=network.target
+
+[Service]
+ExecStart=/opt/@PROJECT_NAME@/bin/starter
+Restart=on-failure
+User=root
+WorkingDirectory=/opt/@PROJECT_NAME@
+
+[Install]
+WantedBy=multi-user.target

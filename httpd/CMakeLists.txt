@@ -7,6 +7,7 @@ include_directories(
 
 # base implements for httpd
 add_library(httpd SHARED
+    http_acceptor.cpp
     http_handler.cpp
     http_router.cpp
     http_session.cpp

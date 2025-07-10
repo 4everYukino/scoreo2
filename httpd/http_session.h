@@ -1,33 +1,42 @@
 #ifndef HTTP_SESSION_H
 #define HTTP_SESSION_H
 
-#include "http_common.h"
+#include "http_request.h"
+#include "http_response.h"
 
-#include <memory>
-#include <string>
-
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/asio/strand.hpp>
 #include <boost/beast/core/flat_buffer.hpp>
+
+namespace asio = boost::asio;
+namespace beast = boost::beast;
 
 class HTTP_Session : public std::enable_shared_from_this<HTTP_Session>
 {
 public:
-    HTTP_Session(tcp::socket socket);
+    HTTP_Session(asio::ip::tcp::socket&& socket);
 
     void run();
 
 private:
-    void run_i();
+    void do_read();
+    void on_read(beast::error_code ec, size_t bytes_transferred);
 
-    void handle_request();
+    bool handle_request();
 
-    void close();
+    void do_write();
+    void on_write(beast::error_code ec, size_t bytes_transferred, bool close);
+
+    void do_close();
 
 private:
-    tcp::socket sock_;
+    asio::ip::tcp::socket sock_;
     beast::flat_buffer buff_;
 
-    Request req_;
-    Response res_;
+    HTTP_Request req_;
+    HTTP_Response res_;
+
+    asio::strand<asio::any_io_executor> strand_;
 };
 
 #endif

@@ -9,11 +9,13 @@
 using namespace std;
 using namespace nlohmann;
 
-bool HTTP_Room_Handler::handle_post(const Request& req, Response& res)
+namespace beast = boost::beast;
+
+bool HTTP_Room_Handler::handle_post(const HTTP_Request& req, HTTP_Response& res)
 {
-    if (req[http::field::content_type] != "text/json") {
+    if (req[beast::http::field::content_type] != "text/json") {
         set_error(res,
-                  http::status::bad_request,
+                  beast::http::status::bad_request,
                   "This method accept only JSON content type.");
 
         return false;
@@ -26,7 +28,7 @@ bool HTTP_Room_Handler::handle_post(const Request& req, Response& res)
         spdlog::error("Failed to parse JSON body, {}", e.what());
 
         set_error(res,
-                  http::status::internal_server_error,
+                  beast::http::status::internal_server_error,
                   "Internal error, parse JSON body failed.");
 
         return false;
@@ -36,7 +38,7 @@ bool HTTP_Room_Handler::handle_post(const Request& req, Response& res)
         spdlog::error("Unexpected JSON body type '{}', it should be an Object.", body.type_name());
 
         set_error(res,
-                  http::status::bad_request,
+                  beast::http::status::bad_request,
                   "The request JSON should be an Object.");
 
         return false;
@@ -54,19 +56,19 @@ bool HTTP_Room_Handler::handle_post(const Request& req, Response& res)
     }
 
     set_error(res,
-              http::status::bad_request,
+              beast::http::status::bad_request,
               "Not supported action '{}'.", action);
 
     return false;
 }
 
-bool HTTP_Room_Handler::handle_create(const json& body, Response& res)
+bool HTTP_Room_Handler::handle_create(const json& body, HTTP_Response& res)
 {
     // TODO:
     return true;
 }
 
-bool HTTP_Room_Handler::handle_join(const json& body, Response& res)
+bool HTTP_Room_Handler::handle_join(const json& body, HTTP_Response& res)
 {
     // TODO:
     // 'player uuid' and 'room uuid'
@@ -74,13 +76,13 @@ bool HTTP_Room_Handler::handle_join(const json& body, Response& res)
     return true;
 }
 
-bool HTTP_Room_Handler::handle_score(const json& body, Response& res)
+bool HTTP_Room_Handler::handle_score(const json& body, HTTP_Response& res)
 {
     // TODO:
     return true;
 }
 
-bool HTTP_Room_Handler::handle_dissolve(const json& body, Response& res)
+bool HTTP_Room_Handler::handle_dissolve(const json& body, HTTP_Response& res)
 {
     // TODO:
     // 'room uuid'
