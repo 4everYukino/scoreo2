@@ -10,7 +10,9 @@ add_executable(starter
 
         init_spdlog.cpp)
 
-target_link_libraries(starter PRIVATE spdlog)
+find_package(Boost REQUIRED COMPONENTS program_options)
+
+target_link_libraries(starter PRIVATE httpd Boost::program_options spdlog)
 
 install(TARGETS starter
         RUNTIME DESTINATION bin

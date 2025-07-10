@@ -1,14 +1,12 @@
 #ifndef HTTP_UTILS_H
 #define HTTP_UTILS_H
 
-#include "http_common.h"
-
 #include <fmt/core.h>
 
-/// \brief Set error code and message to a HTTP Response.
+/// \brief Set error code and message to a HTTP HTTP_Response.
 template <typename... Args>
-void set_error(Response& res,
-               http::status status,
+void set_error(HTTP_Response& res,
+               beast::http::status status,
                fmt::format_string<Args...> fmt_str,
                Args&... args)
 {

@@ -22,6 +22,11 @@ public:
     Room_Manager(const Room_Manager& other) = delete;
     Room_Manager& operator=(const Room_Manager& other) = delete;
 
+private:
+    Room_Manager() = default;
+    ~Room_Manager() = default;
+
+public:
     Room_var get(const std::string& room_uuid) const;
 
     bool create(const Room_Type& type,
@@ -29,11 +34,6 @@ public:
                 std::string& room_uuid);
 
     bool dissolve(const std::string& room_uuid);
-
-private:
-    Room_Manager() {
-
-    }
 
 private:
     std::unordered_set<Room_var> rooms_;

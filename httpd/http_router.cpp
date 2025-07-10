@@ -6,6 +6,8 @@
 
 using namespace std;
 
+namespace beast = boost::beast;
+
 bool Router::add(const string& path,
                  HTTP_Handler* handler)
 {
@@ -17,7 +19,7 @@ bool Router::add(const string& path,
     return true;
 }
 
-void Router::dispatch(const Request& req, Response& res)
+void Router::dispatch(const HTTP_Request& req, HTTP_Response& res)
 {
     const string target(req.target());
 
@@ -30,9 +32,9 @@ void Router::dispatch(const Request& req, Response& res)
 
     if (it == routes_.end()) {
         res.version(req.version());
-        res.result(http::status::not_found);
+        res.result(beast::http::status::not_found);
 
-        res.set(http::field::content_type, "text/plain");
+        res.set(beast::http::field::content_type, "text/plain");
 
         res.body() = fmt::format("The '{}' is not compiled.", path);
 

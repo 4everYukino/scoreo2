@@ -1,11 +1,15 @@
 #include "http_handler.h"
 
-static bool notAllowed(const Request& req, Response& res)
+#include <boost/beast/http.hpp>
+
+namespace beast = boost::beast;
+
+static bool notAllowed(const HTTP_Request& req, HTTP_Response& res)
 {
     res.version(req.version());
-    res.result(http::status::method_not_allowed);
+    res.result(beast::http::status::method_not_allowed);
 
-    res.set(http::field::content_type, "text/plain");
+    res.set(beast::http::field::content_type, "text/plain");
     res.body() = "Not implement this HTTP method.";
 
     res.prepare_payload();
@@ -13,11 +17,11 @@ static bool notAllowed(const Request& req, Response& res)
     return false;
 }
 
-bool HTTP_Handler::handle_request(const Request& req, Response& res)
+bool HTTP_Handler::handle_request(const HTTP_Request& req, HTTP_Response& res)
 {
     const auto method = req.method();
     switch (method) {
-    case http::verb::post:
+    case beast::http::verb::post:
         return handle_post(req, res);
     default:
         break;
@@ -26,7 +30,7 @@ bool HTTP_Handler::handle_request(const Request& req, Response& res)
     return notAllowed(req, res);
 }
 
-bool HTTP_Handler::handle_post(const Request& req, Response& res)
+bool HTTP_Handler::handle_post(const HTTP_Request& req, HTTP_Response& res)
 {
     return notAllowed(req, res);
 }

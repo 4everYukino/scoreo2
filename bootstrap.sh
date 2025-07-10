@@ -7,7 +7,7 @@ BUILD_SUBDIR="${BUILD_DIR}/build"
 STAGING_DIR="${BUILD_DIR}/build/_package"
 INSTALL_PREFIX="/opt/${PROJECT_NAME}"
 
-rm -rf "${BUILD_SUBDIR}" "${PROJECT_NAME}.tar.gz"
+# rm -rf "${BUILD_SUBDIR}" "${PROJECT_NAME}.tar.gz"
 
 mkdir -p "${BUILD_SUBDIR}"
 mkdir -p "${STAGING_DIR}"
