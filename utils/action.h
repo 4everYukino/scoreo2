@@ -3,6 +3,8 @@
 
 #include "player.h"
 
+#include <cstdint>
+
 struct Action
 {
     time_t timestamp = 0;
