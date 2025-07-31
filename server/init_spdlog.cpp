@@ -30,6 +30,7 @@ bool init_spdlog()
 
     auto rotating_logger = std::make_shared<spdlog::logger>("rotating_logger", rotating_sink);
 
+    rotating_logger->flush_on(spdlog::level::debug);
     rotating_logger->set_level(spdlog::level::debug);
     rotating_logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%l] %v");
 

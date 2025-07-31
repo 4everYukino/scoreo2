@@ -13,6 +13,8 @@ add_library(scoring SHARED
     utils/game.cpp
 )
 
+target_link_libraries(scoring PRIVATE spdlog)
+
 install(TARGETS scoring
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
