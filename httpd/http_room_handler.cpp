@@ -2,7 +2,7 @@
 
 #include "http_utils.h"
 
-#include "room/room_manager.h"
+#include "scoring/room_manager.h"
 
 #include <spdlog/spdlog.h>
 

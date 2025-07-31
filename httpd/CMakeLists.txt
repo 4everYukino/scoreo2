@@ -13,12 +13,12 @@ add_library(httpd SHARED
     http_session.cpp
 )
 
-# first business: scoreo {
+# first business: scoring {
 target_sources(httpd PRIVATE
     http_room_handler.cpp
 )
 
-target_link_libraries(httpd PRIVATE fmt nlohmann_json room spdlog)
+target_link_libraries(httpd PRIVATE fmt nlohmann_json scoring spdlog)
 
 # }
 

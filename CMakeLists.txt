@@ -13,7 +13,6 @@ include_directories(
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
 
 add_subdirectory(server)
-add_subdirectory(utils)
 
 # basic modules {
 OPTION(ENABLE_HTTPD "Enable httpd module" ON)
@@ -24,10 +23,10 @@ endif()
 # }
 
 # business modules {
-OPTION(ENABLE_ROOM "Enable room module" ON)
+OPTION(ENABLE_SCORING "Enable scoring module" ON)
 
-if (ENABLE_ROOM)
-    add_subdirectory(room)
+if (ENABLE_SCORING)
+    add_subdirectory(scoring)
 endif()
 # }
 
