@@ -27,7 +27,7 @@ public:
     bool add(const std::string& path,
              HTTP_Handler* handler);
 
-    void dispatch(const HTTP_Request& req, HTTP_Response& res);
+    bool dispatch(const HTTP_Request& req, HTTP_Response& res);
 
 private:
     std::map<std::string, std::unique_ptr<HTTP_Handler>> routes_;

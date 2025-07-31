@@ -7,8 +7,8 @@
 
 class HTTP_Room_Handler final : public HTTP_Handler
 {
-private:
-    bool handle_post(const HTTP_Request& req, HTTP_Response& res) override;
+protected:
+    bool handle_post_i(const HTTP_Request& req, HTTP_Response& res) override;
 
 private:
     bool handle_create(const nlohmann::json& body, HTTP_Response& res);
