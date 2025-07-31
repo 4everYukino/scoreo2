@@ -9,6 +9,8 @@ include_directories(
 add_library(httpd SHARED
     http_acceptor.cpp
     http_handler.cpp
+    http_handler_factory.cpp
+    http_helper.cpp
     http_router.cpp
     http_session.cpp
 )
@@ -19,7 +21,6 @@ target_sources(httpd PRIVATE
 )
 
 target_link_libraries(httpd PRIVATE fmt nlohmann_json scoring spdlog)
-
 # }
 
 install(TARGETS httpd

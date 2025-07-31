@@ -19,9 +19,6 @@ public:
         return &h;
     }
 
-    Room_Manager(const Room_Manager& other) = delete;
-    Room_Manager& operator=(const Room_Manager& other) = delete;
-
 private:
     Room_Manager() = default;
     ~Room_Manager() = default;

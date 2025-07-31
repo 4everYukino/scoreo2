@@ -5,6 +5,8 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
+#include <spdlog/spdlog.h>
+
 using namespace std;
 
 Room_var Room_Manager::get(const string& room_uuid) const
@@ -18,8 +20,7 @@ Room_var Room_Manager::get(const string& room_uuid) const
     );
 
     if (it == rooms_.end()) {
-        // Log
-
+        spdlog::error("Failed to get room '{}', it does not exist.", room_uuid);
         return nullptr;
     }
 
@@ -52,8 +53,7 @@ bool Room_Manager::create(const Room_Type& type,
     case Room_Type::POOL_BASED_SCORING:
         r = make_shared<Pool_Based_Room>();
         if (!r || !r->init(room_uuid, first_player_uuid)) {
-            // Log
-
+            spdlog::error("Unexpected internal error, cannot init a new room '{}'.", room_uuid);
             r.reset();
             return false;
         }
@@ -64,9 +64,9 @@ bool Room_Manager::create(const Room_Type& type,
         break;
     }
 
+    // Should never happen by design
     if (!rooms_.insert(r).second) {
-        // Log
-
+        spdlog::critical("Failed to insert a new KV to `std::unordered_set`, see logs for more details.");
         return false;
     }
 
@@ -77,13 +77,12 @@ bool Room_Manager::dissolve(const string& room_uuid)
 {
     auto r = get(room_uuid);
     if (!r) {
-        // Log
-
+        spdlog::error("The room '{}' does not exist.", room_uuid);
         return false;
     }
 
-    if (r->dissolve()) {
-        // Log
+    if (!r->dissolve()) {
+        spdlog::error("Failed to dissolve room '{}', see logs for more details.", room_uuid);
         return false;
     }
 

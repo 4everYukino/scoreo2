@@ -7,7 +7,9 @@ public:
     bool operator()();
 
 private:
-    bool parse_config();
+    bool parse_global_config();
+
+    bool parse_http_handler_config();
 };
 
 #endif

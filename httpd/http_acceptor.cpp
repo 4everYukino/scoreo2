@@ -50,6 +50,7 @@ void HTTP_Acceptor::on_accept(beast::error_code ec)
 
     if (ec) {
         // Don't accept more connections if acceptor fails
+        spdlog::error("Failed to accept connection, beast error: {}", ec.message());
         return;
     }
 

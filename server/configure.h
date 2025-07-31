@@ -11,9 +11,6 @@ public:
         return &inst;
     }
 
-    SCOREO2_Config(const SCOREO2_Config& other) = delete;
-    SCOREO2_Config operator=(const SCOREO2_Config& other) = delete;
-
 private:
     SCOREO2_Config() = default;
     ~SCOREO2_Config() = default;
