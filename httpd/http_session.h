@@ -25,7 +25,7 @@ private:
     bool handle_request();
 
     void do_write();
-    void on_write(beast::error_code ec, size_t bytes_transferred, bool close);
+    void on_write(beast::error_code ec, size_t bytes_transferred);
 
     void do_close();
 

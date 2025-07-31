@@ -1,6 +1,6 @@
 #include "http_room_handler.h"
 
-#include "http_utils.h"
+#include "http_helper.h"
 
 #include "scoring/room_manager.h"
 
@@ -11,13 +11,26 @@ using namespace nlohmann;
 
 namespace beast = boost::beast;
 
-bool HTTP_Room_Handler::handle_post(const HTTP_Request& req, HTTP_Response& res)
+static void bad_request(HTTP_Response& res, const string& body = string())
+{
+    res.result(beast::http::status::bad_request);
+    if (!body.empty()) {
+        res.body() = body;
+    }
+}
+
+static void internal_error(HTTP_Response& res, const string& body = string())
+{
+    res.result(beast::http::status::internal_server_error);
+    if (!body.empty()) {
+        res.body() = body;
+    }
+}
+
+bool HTTP_Room_Handler::handle_post_i(const HTTP_Request& req, HTTP_Response& res)
 {
     if (req[beast::http::field::content_type] != "text/json") {
-        set_error(res,
-                  beast::http::status::bad_request,
-                  "This method accept only JSON content type.");
-
+        bad_request(res);
         return false;
     }
 
@@ -26,21 +39,13 @@ bool HTTP_Room_Handler::handle_post(const HTTP_Request& req, HTTP_Response& res)
         body = json::parse(req.body());
     } catch (const json::parse_error& e) {
         spdlog::error("Failed to parse JSON body, {}", e.what());
-
-        set_error(res,
-                  beast::http::status::internal_server_error,
-                  "Internal error, parse JSON body failed.");
-
+        internal_error(res);
         return false;
     }
 
     if (!body.is_object()) {
         spdlog::error("Unexpected JSON body type '{}', it should be an Object.", body.type_name());
-
-        set_error(res,
-                  beast::http::status::bad_request,
-                  "The request JSON should be an Object.");
-
+        bad_request(res);
         return false;
     }
 
@@ -55,10 +60,7 @@ bool HTTP_Room_Handler::handle_post(const HTTP_Request& req, HTTP_Response& res)
         return handle_dissolve(body, res);
     }
 
-    set_error(res,
-              beast::http::status::bad_request,
-              "Not supported action '{}'.", action);
-
+    bad_request(res);
     return false;
 }
 

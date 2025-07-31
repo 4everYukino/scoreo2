@@ -11,7 +11,7 @@ add_executable(starter
         initializer.cpp
         init_spdlog.cpp)
 
-target_link_libraries(starter PRIVATE httpd nlohmann_json spdlog)
+target_link_libraries(starter PRIVATE fmt httpd nlohmann_json spdlog)
 
 install(TARGETS starter
         RUNTIME DESTINATION bin

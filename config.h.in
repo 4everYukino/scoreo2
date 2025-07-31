@@ -1,13 +1,16 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-/* PROJECT_NAME */
 #define PROJECT_NAME "@PROJECT_NAME@"
 
-/* CONF_PREFIX */
+/// Config {
 #define CONF_PREFIX "@CONF_PREFIX@"
 
-/* LOG_PREFIX */
+#define GLOBAL_CONFIG_FILE PROJECT_NAME ".conf"
+
+#define HANDLER_CONFIG_FILE "handler.conf"
+/// }
+
 #define LOG_PREFIX "@PRODUCT_LOG_PREFIX@"
 
 #endif
