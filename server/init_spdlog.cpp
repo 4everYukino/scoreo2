@@ -12,7 +12,7 @@ namespace fs = std::filesystem;
 
 bool init_spdlog()
 {
-    fs::path dir(LOG_DIR_PREFIX);
+    fs::path dir(LOG_PREFIX);
     error_code ec;
     if (!fs::exists(dir, ec) && !fs::create_directory(dir, ec)) {
         spdlog::error("Failed to create '{}', {}", dir.c_str(), ec.message());

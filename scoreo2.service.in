@@ -3,10 +3,11 @@ Description=@PROJECT_NAME@
 After=network.target
 
 [Service]
-ExecStart=/opt/@PROJECT_NAME@/bin/starter
+Environment=LD_LIBRARY_PATH=@OPT_PREFIX@/lib
+ExecStart=@OPT_PREFIX@/bin/starter
 Restart=on-failure
 User=root
-WorkingDirectory=/opt/@PROJECT_NAME@
+WorkingDirectory=@OPT_PREFIX@
 
 [Install]
 WantedBy=multi-user.target

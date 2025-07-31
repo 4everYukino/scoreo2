@@ -20,8 +20,13 @@ cmake -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" -DCMAKE_BUILD_TYPE=Debug -DCMAK
 make -j"$(nproc)"
 make DESTDIR="${STAGING_DIR}" install
 
+install -m 755 "${BUILD_DIR}/install.sh" "${STAGING_DIR}"
+
 cd "${STAGING_DIR}"
-tar -czf "${BUILD_DIR}/${PROJECT_NAME}.tar.gz" lib opt
+tar --exclude="opt/${PROJECT_NAME}/include" \
+    --exclude="opt/${PROJECT_NAME}/lib/cmake" \
+    --exclude="opt/${PROJECT_NAME}/lib/pkgconfig" \
+    -czf "${BUILD_DIR}/${PROJECT_NAME}.tar.gz" lib opt "install.sh"
 
 duration=$SECONDS
 
