@@ -2,16 +2,15 @@
 
 set -euo pipefail
 
-PREFIX="/opt/scoreo2"
-FORCE=0
+ETC_PREFIX="/etc/scoreo2"
+OPT_PREFIX="/opt/scoreo2"
+SERVICE_DIR="/lib/systemd/system"
 SERVICE_NAME="scoreo2.service"
 
 function help() {
     cat <<'EOF'
-Usage: ./install.sh [-p PREFIX] [-f]
+Usage: ./install.sh
     -h, --help: Print this help and exit
-    -p, --prefix: Specify the install prefix [default: "/opt/scoreo2"]
-    -f, --force: Force overwrite if the target exists
 EOF
 }
 
@@ -25,14 +24,6 @@ function pre_install() {
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
-    -p|--prefix)
-        PREFIX="$2"
-        shift 2
-        ;;
-    -f|--force)
-        FORCE=1
-        shift
-        ;;
     -h|--help)
         help
         exit 0
@@ -52,33 +43,34 @@ fi
 
 pre_install
 
-# Force mode: remove existing directory if requested
-if [[ $FORCE -eq 1 && -d "$PREFIX" ]]; then
-    echo "Force mode: removing existing directory $PREFIX"
-    rm -rf "$PREFIX"
-fi
-
 # 1. Install application binaries
-echo "Creating directory $PREFIX/bin"
-install -d -m 755 "$PREFIX/bin"
-install -m 755 opt/scoreo2/bin/starter "$PREFIX/bin/"
+echo "Installing application binaries to $OPT_PREFIX/bin ..."
+install -d -m 755 "$OPT_PREFIX/bin"
+install -m 755 opt/scoreo2/bin/starter "$OPT_PREFIX/bin/"
 
 # 2. Install library files
-echo "Creating directory $PREFIX/lib"
-install -d -m 755 "$PREFIX/lib"
+echo "Installing library files to $OPT_PREFIX/lib ..."
+install -d -m 755 "$OPT_PREFIX/lib"
 for lib in opt/scoreo2/lib/*.so*; do
-    echo "Installing library $lib -> $PREFIX/lib/"
-    install -m 644 "$lib" "$PREFIX/lib/"
+    echo "  Installing '$lib' -> $OPT_PREFIX/lib/ ..."
+    install -m 644 "$lib" "$OPT_PREFIX/lib/"
 done
 
-# 3. Install systemd service
-SERVICE_DIR="/lib/systemd/system"
+# 3. Install conf files
+echo "Installing config files to $ETC_PREFIX/conf ..."
+install -d -m 755 "$ETC_PREFIX/conf"
+for conf in etc/scoreo2/conf/*.conf; do
+    echo "  Installing '$conf' -> $ETC_PREFIX/conf/ ..."
+    install -m 644 "$conf" "$ETC_PREFIX/conf/"
+done
+
+# 4. Install systemd service
 echo "Installing systemd service to $SERVICE_DIR"
 install -d -m 755 "$SERVICE_DIR"
 install -m 644 lib/systemd/system/scoreo2.service "$SERVICE_DIR/"
 
-echo "Reloading systemd daemon"
+echo "Reloading systemd daemon ..."
 systemctl daemon-reload
 
-# 4. Completion message
+# 5. Completion message
 echo "The scoreo2 installation is completed."

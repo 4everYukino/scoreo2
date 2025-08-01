@@ -26,8 +26,10 @@ void HTTP_Acceptor::run()
 
 void HTTP_Acceptor::close()
 {
-    if (acceptor_.is_open())
+    if (acceptor_.is_open()) {
+        spdlog::debug("Closing scoreo2 HTTP acceptor ...");
         acceptor_.close();
+    }
 }
 
 void HTTP_Acceptor::do_accept()

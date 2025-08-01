@@ -44,8 +44,11 @@ add_subdirectory(src/spdlog)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-if(UNIX)
+if (UNIX)
+  set(ETC_PREFIX /etc/${PROJECT_NAME})
   set(OPT_PREFIX /opt/${PROJECT_NAME})
+
+  set(CONF_PREFIX ${ETC_PREFIX}/conf)
 
   set(PRODUCT_LOG_PREFIX /var/log/${PROJECT_NAME})
 
@@ -67,4 +70,11 @@ configure_file(
 install(
   FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.service"
   DESTINATION "${SYSTEMD_UNIT_DIR}"
+)
+
+install(
+  DIRECTORY "${CMAKE_SOURCE_DIR}/conf/"
+  DESTINATION "${CONF_PREFIX}"
+  FILES_MATCHING
+    PATTERN "*.conf"
 )
