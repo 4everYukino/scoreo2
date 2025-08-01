@@ -4,33 +4,71 @@
 
 namespace beast = boost::beast;
 
-static bool notAllowed(const HTTP_Request& req, HTTP_Response& res)
+static void not_implemented(HTTP_Response& res)
 {
-    res.version(req.version());
-    res.result(beast::http::status::method_not_allowed);
-
-    res.set(beast::http::field::content_type, "text/plain");
-    res.body() = "Not implement this HTTP method.";
-
-    res.prepare_payload();
-
-    return false;
+    res.result(beast::http::status::not_implemented);
 }
 
 bool HTTP_Handler::handle_request(const HTTP_Request& req, HTTP_Response& res)
 {
     const auto method = req.method();
     switch (method) {
+    case beast::http::verb::get:
+        return handle_get(req, res);
     case beast::http::verb::post:
         return handle_post(req, res);
+    case beast::http::verb::put:
+        return handle_put(req, res);
+    case beast::http::verb::delete_:
+        return handle_delete(req, res);
     default:
         break;
     }
 
-    return notAllowed(req, res);
+    not_implemented(res);
+    return false;
+}
+
+bool HTTP_Handler::handle_get(const HTTP_Request& req, HTTP_Response& res)
+{
+    return handle_get_i(req, res);
 }
 
 bool HTTP_Handler::handle_post(const HTTP_Request& req, HTTP_Response& res)
 {
-    return notAllowed(req, res);
+    return handle_post_i(req, res);
+}
+
+bool HTTP_Handler::handle_put(const HTTP_Request& req, HTTP_Response& res)
+{
+    return handle_put_i(req, res);
+}
+
+bool HTTP_Handler::handle_delete(const HTTP_Request& req, HTTP_Response& res)
+{
+    return handle_delete_i(req, res);
+}
+
+bool HTTP_Handler::handle_get_i(const HTTP_Request& req, HTTP_Response& res)
+{
+    not_implemented(res);
+    return false;
+}
+
+bool HTTP_Handler::handle_post_i(const HTTP_Request& req, HTTP_Response& res)
+{
+    not_implemented(res);
+    return false;
+}
+
+bool HTTP_Handler::handle_put_i(const HTTP_Request& req, HTTP_Response& res)
+{
+    not_implemented(res);
+    return false;
+}
+
+bool HTTP_Handler::handle_delete_i(const HTTP_Request& req, HTTP_Response& res)
+{
+    not_implemented(res);
+    return false;
 }
