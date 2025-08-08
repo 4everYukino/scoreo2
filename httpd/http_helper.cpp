@@ -23,6 +23,13 @@ string HTTP_Helper::header(const HTTP_Request& req)
                        req.version() % 10);
 }
 
+string HTTP_Helper::path(const HTTP_Request& req)
+{
+    auto tgt = req.target();
+
+    return tgt.substr(0, tgt.find('?')).to_string();
+}
+
 void HTTP_Helper::init_response(HTTP_Response& res, bool keep_alive)
 {
     /// STATUS LINE {

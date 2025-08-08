@@ -20,15 +20,9 @@ bool Router::add(const string& path, HTTP_Handler* handler)
 
 bool Router::dispatch(const HTTP_Request& req, HTTP_Response& res)
 {
-    const string target(req.target());
-
-    size_t pos = target.find('?');
-    const string path = target.substr(0, pos);
-
-    spdlog::debug("Dispatching HTTP request '{}'",
-                  HTTP_Helper::header(req));
-
     HTTP_Helper::init_response(res, req.keep_alive());
+
+    const string path = HTTP_Helper::path(req);
 
     auto it = routes_.find(path);
     if (it == routes_.end()) {
