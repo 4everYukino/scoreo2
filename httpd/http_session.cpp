@@ -45,8 +45,13 @@ void HTTP_Session::on_read(beast::error_code ec, size_t bytes_transferred)
         return do_close();
     }
 
+    spdlog::debug("Received a HTTP request '{}' from client {}:{}",
+                  HTTP_Helper::header(req_),
+                  sock_.remote_endpoint().address().to_string(),
+                  sock_.remote_endpoint().port());
+
     if (!handle_request()) {
-        spdlog::error("Failed to handle request '{}' from client {}:{}",
+        spdlog::error("Failed to handle HTTP request '{}' from client {}:{}",
                       HTTP_Helper::header(req_),
                       sock_.remote_endpoint().address().to_string(),
                       sock_.remote_endpoint().port());

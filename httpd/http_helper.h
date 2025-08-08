@@ -14,6 +14,8 @@ public:
 
     static std::string header(const HTTP_Request& req);
 
+    static std::string path(const HTTP_Request& req);
+
     /// @brief Set default attributes for HTTP Response, e.g:
     ///          * HTTP Version,
     ///          * 200 OK,
