@@ -2,7 +2,6 @@
 
 #include "configure.h"
 #include "initializer.h"
-#include "init_spdlog.h"
 
 #include "httpd/http_acceptor.h"
 
@@ -18,11 +17,6 @@ boost::system::error_code ec;
 
 int main(int argc, char** argv)
 {
-    if (!init_spdlog()) {
-        spdlog::error("Failed to init rotating spdlog.");
-        return EXIT_FAILURE;
-    }
-
     if (!Initializer()()) {
         spdlog::error("The initializer cannot init server, see logs for more details.");
         return EXIT_FAILURE;
@@ -30,8 +24,8 @@ int main(int argc, char** argv)
 
     asio::io_context ioc;
     asio::ip::tcp::endpoint ep(
-        asio::ip::make_address(SCOREO2_Config::instance()->host, ec),
-        SCOREO2_Config::instance()->port
+        asio::ip::make_address(Config::instance()->host, ec),
+        Config::instance()->port
     );
 
     if (ec) {

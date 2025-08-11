@@ -8,7 +8,8 @@
 template <typename T>
 inline void path_normalize(std::basic_string<T>& path, T sep)
 {
-    // TODO ...
+    /// TODO:
+    /// implement ...
 }
 
 template <typename T>

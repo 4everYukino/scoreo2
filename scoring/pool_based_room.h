@@ -3,6 +3,8 @@
 
 #include "room.h"
 
+#include <mutex>
+
 class Pool_Based_Room final : public Room
 {
 public:
@@ -13,7 +15,7 @@ public:
 
     bool join(const Player_ID& player_uuid) override;
 
-    bool apply_action(const Action& act);
+    bool apply_action(const Action& act) override;
 
     bool next_game() override;
 
@@ -23,7 +25,11 @@ public:
 
     /// }
 
+private:
     int64_t pool_score();
+
+private:
+    std::mutex mtx_;
 };
 
 #endif

@@ -6,6 +6,7 @@
 #include "pool_based_room.h"
 
 #include <memory>
+#include <shared_mutex>
 #include <string>
 #include <unordered_set>
 
@@ -34,6 +35,8 @@ public:
 
 private:
     std::unordered_set<Room_var> rooms_;
+
+    mutable std::shared_mutex mtx_;
 };
 
 #endif

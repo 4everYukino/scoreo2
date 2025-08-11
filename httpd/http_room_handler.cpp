@@ -27,6 +27,15 @@ static void internal_error(HTTP_Response& res, const string& body = string())
     }
 }
 
+bool HTTP_Room_Handler::handle_get_i(const HTTP_Request& req, HTTP_Response& res)
+{
+    // TODO:
+    //   Step 1: find 'room' in query
+    //   Step 2: return room info
+
+    return true;
+}
+
 bool HTTP_Room_Handler::handle_post_i(const HTTP_Request& req, HTTP_Response& res)
 {
     if (req[beast::http::field::content_type] != "text/json") {
@@ -67,13 +76,15 @@ bool HTTP_Room_Handler::handle_post_i(const HTTP_Request& req, HTTP_Response& re
 bool HTTP_Room_Handler::handle_create(const json& body, HTTP_Response& res)
 {
     // TODO:
+    // 'type' & 'first player uuid'
+
     return true;
 }
 
 bool HTTP_Room_Handler::handle_join(const json& body, HTTP_Response& res)
 {
     // TODO:
-    // 'player uuid' and 'room uuid'
+    // 'player uuid' & 'room uuid'
 
     return true;
 }
@@ -81,6 +92,8 @@ bool HTTP_Room_Handler::handle_join(const json& body, HTTP_Response& res)
 bool HTTP_Room_Handler::handle_score(const json& body, HTTP_Response& res)
 {
     // TODO:
+    // 'giver' & 'receiver' & 'score'
+
     return true;
 }
 

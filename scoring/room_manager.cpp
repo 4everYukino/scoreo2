@@ -11,6 +11,8 @@ using namespace std;
 
 Room_var Room_Manager::get(const string& room_uuid) const
 {
+    shared_lock sl(mtx_);
+
     auto it = find_if(
             rooms_.begin(),
             rooms_.end(),
@@ -31,6 +33,8 @@ bool Room_Manager::create(const Room_Type& type,
                           const Player_ID& first_player_uuid,
                           string& room_uuid)
 {
+    lock_guard lg(mtx_);
+
     room_uuid.clear();
 
     boost::uuids::random_generator g;
@@ -75,6 +79,8 @@ bool Room_Manager::create(const Room_Type& type,
 
 bool Room_Manager::dissolve(const string& room_uuid)
 {
+    lock_guard lg(mtx_);
+
     auto r = get(room_uuid);
     if (!r) {
         spdlog::error("The room '{}' does not exist.", room_uuid);
