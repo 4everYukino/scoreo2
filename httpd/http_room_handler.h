@@ -9,6 +9,7 @@
 class HTTP_Room_Handler final : public HTTP_Handler
 {
 protected:
+    bool handle_get_i(const HTTP_Request& req, HTTP_Response& res) override;
     bool handle_post_i(const HTTP_Request& req, HTTP_Response& res) override;
 
 private:
