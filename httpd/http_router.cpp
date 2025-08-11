@@ -30,8 +30,8 @@ bool Router::dispatch(const HTTP_Request& req, HTTP_Response& res)
         return false;
     }
 
-    // TODO:
-    //   * Layered Routing
+    /// TODO:
+    ///   * Layered Routing
 
     auto it = routes_.find(uri.decoded_path);
     if (it == routes_.end()) {

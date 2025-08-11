@@ -3,17 +3,17 @@
 
 #include <string>
 
-class SCOREO2_Config
+class Config
 {
 public:
-    static SCOREO2_Config* instance() {
-        static SCOREO2_Config inst;
+    static Config* instance() {
+        static Config inst;
         return &inst;
     }
 
 private:
-    SCOREO2_Config() = default;
-    ~SCOREO2_Config() = default;
+    Config() = default;
+    ~Config() = default;
 
 public:
     std::string host = "127.0.0.1";

@@ -67,7 +67,8 @@ bool HTTP_URI_Parser::parse_path(HTTP_URI& uri)
 
     uri.decoded_path = join(uri.path_segments, "/");
 
-    // Normalize ...
+    /// TODO:
+    /// Normalize ...
 
     return true;
 }

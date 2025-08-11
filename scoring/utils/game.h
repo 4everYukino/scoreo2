@@ -4,6 +4,7 @@
 #include "action.h"
 #include "player.h"
 
+#include <mutex>
 #include <unordered_map>
 #include <vector>
 
@@ -24,6 +25,8 @@ private:
 
     /// This profiles is just realated to the current game.
     std::unordered_map<Player_ID, Player_Profile> profiles_;
+
+    std::mutex mtx_;
 };
 
 #endif

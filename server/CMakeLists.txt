@@ -8,8 +8,7 @@ include_directories(
 add_executable(starter
         main.cpp
 
-        initializer.cpp
-        init_spdlog.cpp)
+        initializer.cpp)
 
 target_link_libraries(starter PRIVATE fmt httpd nlohmann_json spdlog)
 
