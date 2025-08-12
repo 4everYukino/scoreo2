@@ -6,22 +6,27 @@
 
 #include <string>
 
-class HTTP_Helper
-{
-public:
-    static void clear(HTTP_Request& req);
-    static void clear(HTTP_Response& res);
+/// @namespace hlpr
+/// @brief The 'hlpr' namespace contains common HTTP-related functions.
+///
+/// This namespace mainly contains helper functions for HTTP request and response
+/// manipulation, but may also include other generic HTTP utility functions in the future.
+namespace hlpr {
 
-    static std::string header(const HTTP_Request& req);
+void clear(HTTP_Request& req);
+void clear(HTTP_Response& res);
 
-    static std::string path(const HTTP_Request& req);
+std::string header(const HTTP_Request& req);
 
-    /// @brief Set default attributes for HTTP Response, e.g:
-    ///          * HTTP Version,
-    ///          * 200 OK,
-    ///          * Connection: Keep-Alive,
-    ///          * ...
-    static void init_response(HTTP_Response& res, bool keep_alive);
+std::string path(const HTTP_Request& req);
+
+/// @brief Set default attributes for HTTP Response, e.g:
+///          * HTTP Version,
+///          * 200 OK,
+///          * Connection: Keep-Alive,
+///          * ...
+void init_response(HTTP_Response& res, bool keep_alive);
+
 };
 
 #endif

@@ -4,17 +4,19 @@
 
 using namespace std;
 
-void HTTP_Helper::clear(HTTP_Request& req)
+namespace hlpr {
+
+void clear(HTTP_Request& req)
 {
     req = {};
 }
 
-void HTTP_Helper::clear(HTTP_Response& res)
+void clear(HTTP_Response& res)
 {
     res = {};
 }
 
-string HTTP_Helper::header(const HTTP_Request& req)
+string header(const HTTP_Request& req)
 {
     return fmt::format("{} {} HTTP/{}.{}",
                        req.method_string(),
@@ -23,7 +25,7 @@ string HTTP_Helper::header(const HTTP_Request& req)
                        req.version() % 10);
 }
 
-string HTTP_Helper::path(const HTTP_Request& req)
+string path(const HTTP_Request& req)
 {
     auto tgt = req.target();
 
@@ -36,7 +38,7 @@ string HTTP_Helper::path(const HTTP_Request& req)
 #endif
 }
 
-void HTTP_Helper::init_response(HTTP_Response& res, bool keep_alive)
+void init_response(HTTP_Response& res, bool keep_alive)
 {
     /// STATUS LINE {
 
@@ -48,3 +50,5 @@ void HTTP_Helper::init_response(HTTP_Response& res, bool keep_alive)
 
     res.set("Server", "Scoreo2");
 }
+
+};

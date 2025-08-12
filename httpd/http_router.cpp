@@ -20,9 +20,9 @@ bool Router::add(const string& path, HTTP_Handler* handler)
 
 bool Router::dispatch(const HTTP_Request& req, HTTP_Response& res)
 {
-    HTTP_Helper::init_response(res, req.keep_alive());
+    hlpr::init_response(res, req.keep_alive());
 
-    const string path = HTTP_Helper::path(req);
+    const string path = hlpr::path(req);
 
     auto it = routes_.find(path);
     if (it == routes_.end()) {
