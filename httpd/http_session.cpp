@@ -21,7 +21,7 @@ void HTTP_Session::run()
 
 void HTTP_Session::do_read()
 {
-    HTTP_Helper::clear(req_);
+    hlpr::clear(req_);
     beast::http::async_read(
         sock_,
         buff_,
@@ -46,13 +46,13 @@ void HTTP_Session::on_read(beast::error_code ec, size_t bytes_transferred)
     }
 
     spdlog::debug("Received a HTTP request '{}' from client {}:{}",
-                  HTTP_Helper::header(req_),
+                  hlpr::header(req_),
                   sock_.remote_endpoint().address().to_string(),
                   sock_.remote_endpoint().port());
 
     if (!handle_request()) {
         spdlog::error("Failed to handle HTTP request '{}' from client {}:{}",
-                      HTTP_Helper::header(req_),
+                      hlpr::header(req_),
                       sock_.remote_endpoint().address().to_string(),
                       sock_.remote_endpoint().port());
     }
@@ -62,7 +62,7 @@ void HTTP_Session::on_read(beast::error_code ec, size_t bytes_transferred)
 
 bool HTTP_Session::handle_request()
 {
-    HTTP_Helper::clear(res_);
+    hlpr::clear(res_);
     return Router::instance()->dispatch(req_, res_);
 }
 
