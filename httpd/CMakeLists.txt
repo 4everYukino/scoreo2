@@ -13,6 +13,7 @@ add_library(httpd SHARED
     http_helper.cpp
     http_router.cpp
     http_session.cpp
+    http_uri_parser.cpp
 )
 
 # first business: scoring {
