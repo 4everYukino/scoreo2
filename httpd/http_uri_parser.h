@@ -1,5 +1,5 @@
-#ifndef HTTP_URI_PARSER
-#define HTTP_URI_PARSER
+#ifndef HTTP_URI_PARSER_H
+#define HTTP_URI_PARSER_H
 
 /**
  * In Boost.Beast HTTP server, the 'target' usually refers to the request-target

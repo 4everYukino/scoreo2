@@ -24,11 +24,13 @@ void clear(HTTP_Response& res);
 
 std::string header(const HTTP_Request& req);
 
-std::string path(const HTTP_Request& req);
-
 bool decode_percent(const char* src, size_t len, std::string& res, int flags);
+
 bool decode_path(const char* src, size_t len, std::string& res, int flags = HLPR_FLAG_SLASH);
-bool decode_query(const char* src, size_t len, std::string& res, int flags = HLPR_FLAG_SPACE);
+std::string decode_path(const char* src, size_t len, int flags = HLPR_FLAG_SLASH);
+
+bool decode_query(const char* src, size_t len, std::string& res, int flags = HLPR_FLAG_SLASH | HLPR_FLAG_SPACE);
+std::string decode_query(const char* src, size_t len, int flags = HLPR_FLAG_SLASH | HLPR_FLAG_SPACE);
 
 /// @brief Set default attributes for HTTP Response.
 void init_response(HTTP_Response& res, bool keep_alive);

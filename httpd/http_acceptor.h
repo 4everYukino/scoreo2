@@ -1,8 +1,6 @@
 #ifndef HTTP_ACCEPTOR_H
 #define HTTP_ACCEPTOR_H
 
-#include "rtlib/export.h"
-
 #include <memory>
 
 #include <boost/asio/io_context.hpp>
@@ -12,7 +10,7 @@
 namespace asio = boost::asio;
 namespace beast = boost::beast;
 
-class SCOREO2_EXPORT HTTP_Acceptor : public std::enable_shared_from_this<HTTP_Acceptor>
+class HTTP_Acceptor : public std::enable_shared_from_this<HTTP_Acceptor>
 {
 public:
     HTTP_Acceptor(asio::io_context& ioc,
