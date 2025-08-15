@@ -7,3 +7,6 @@
 [submodule "src/fmt"]
 	path = src/fmt
 	url = git@github.com:fmtlib/fmt.git
+[submodule "src/googletest"]
+	path = src/googletest
+	url = https://github.com/google/googletest.git

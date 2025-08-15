@@ -29,25 +29,16 @@ string header(const HTTP_Request& req)
                        req.version() % 10);
 }
 
-string path(const HTTP_Request& req)
-{
-    auto tgt = req.target();
-
-#if BOOST_VERSION >= 107600
-    // Boost >= 1.76: string_view has implicit conversion to std::string
-    return std::string(tgt.substr(0, tgt.find('?')));
-#else
-    // Boost < 1.76: must call to_string()
-    return tgt.substr(0, tgt.find('?')).to_string();
-#endif
-}
-
 bool decode_percent(const char* src, size_t len, string& res, int flags)
 {
-    if (!src || !len)
+    if (!src)
         return false;
 
     res.clear();
+    if (!len)
+        return true;
+
+    res.reserve(len);
 
     const char* end = src + len;
     while (src < end) {
@@ -61,15 +52,17 @@ bool decode_percent(const char* src, size_t len, string& res, int flags)
                 return false;
 
             unsigned char decoded = static_cast<unsigned char>((h << 4) | l);
-
-            if (decoded == '/' && (flags & HLPR_FLAG_SLASH)) {
-                res.push_back(static_cast<char>(decoded));
-                src += HEX_PAIR_LEN;
-            } else {
-                for (int i = 0; i < HEX_PAIR_LEN; ++i) {
-                    res.push_back(*src++);
+            if (decoded == '/') {
+                if (flags & HLPR_FLAG_SLASH) {
+                    res.push_back(static_cast<char>(decoded));
+                } else {
+                    res.append(src, HEX_PAIR_LEN);
                 }
+            } else {
+                res.push_back(static_cast<char>(decoded));
             }
+
+            src += HEX_PAIR_LEN;
         } else if (*src == '+' && (flags & HLPR_FLAG_SPACE)) {
             res.push_back(' ');
             ++src;
@@ -86,9 +79,29 @@ bool decode_path(const char* src, size_t len, string& res, int flags)
     return decode_percent(src, len, res, flags);
 }
 
+string decode_path(const char* src, size_t len, int flags)
+{
+    string res;
+    if (!decode_path(src, len, res, flags)) {
+        res.clear();
+    }
+
+    return res;
+}
+
 bool decode_query(const char* src, size_t len, string& res, int flags)
 {
     return decode_percent(src, len, res, flags);
+}
+
+string decode_query(const char* src, size_t len, int flags)
+{
+    string res;
+    if (!decode_query(src, len, res, flags)) {
+        res.clear();
+    }
+
+    return res;
 }
 
 void init_response(HTTP_Response& res, bool keep_alive)
@@ -96,12 +109,11 @@ void init_response(HTTP_Response& res, bool keep_alive)
     /// STATUS LINE {
 
     res.version(11); ///< HTTP/1.1
-    res.result(beast::http::status::ok);
     res.keep_alive(keep_alive);
 
     /// }
 
-    res.set("Server", "Scoreo2");
+    res.set("Server", "scoreo2");
 }
 
 };

@@ -29,7 +29,7 @@ bool HTTP_URI_Parser::parse(beast::string_view tgt, HTTP_URI& uri)
 bool HTTP_URI_Parser::parse_i(HTTP_URI& uri)
 {
     if (uri.target.empty())
-        return false;
+        return true;
 
     const auto qpos = uri.target.find('?');
     if (qpos == string::npos) {
@@ -82,10 +82,11 @@ bool HTTP_URI_Parser::parse_query(HTTP_URI& uri)
         [](const string& t) {
             const auto epos = t.find('=');
             if (epos == string::npos)
-                return make_pair(t, string());
+                return make_pair(hlpr::decode_query(t.c_str(), t.size()),
+                                 string());
 
-            return make_pair(t.substr(0, epos),
-                             t.substr(epos + 1));
+            return make_pair(hlpr::decode_query(t.c_str(), epos),
+                             hlpr::decode_query(t.c_str() + epos + 1, t.size() - epos - 1));
         }
     );
 

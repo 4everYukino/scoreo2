@@ -24,4 +24,4 @@ jobs:
         sudo apt install -y libboost-dev
 
     - name: build
-      run: ./bootstrap.sh
+      run: ./bootstrap.sh -t

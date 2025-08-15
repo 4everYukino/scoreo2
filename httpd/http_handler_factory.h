@@ -3,14 +3,12 @@
 
 #include "http_handler.h"
 
-#include "rtlib/export.h"
-
 #include <functional>
 #include <memory>
 #include <string>
 #include <unordered_map>
 
-class SCOREO2_EXPORT HTTP_Handler_Factory
+class HTTP_Handler_Factory
 {
 public:
     static HTTP_Handler_Factory* instance() {
