@@ -16,9 +16,14 @@ add_subdirectory(server)
 
 # basic modules {
 OPTION(ENABLE_HTTPD "Enable httpd module" ON)
+OPTION(ENABLE_PROCESS "Enable process module" ON)
 
 if (ENABLE_HTTPD)
     add_subdirectory(httpd)
+endif()
+
+if (ENABLE_PROCESS)
+    add_subdirectory(process)
 endif()
 # }
 
