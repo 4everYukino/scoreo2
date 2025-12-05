@@ -3,6 +3,10 @@
 
 #define PROJECT_NAME "@PROJECT_NAME@"
 
+#define OPT_PREFIX "@OPT_PREFIX@"
+#define BIN_DIR OPT_PREFIX "/" "bin"
+#define LIB_DIR OPT_PREFIX "/" "lib"
+
 /// Config {
 #define CONF_PREFIX "@CONF_PREFIX@"
 

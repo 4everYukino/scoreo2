@@ -9,11 +9,20 @@ add_library(process SHARED
     process_handler.cpp
     process_killer.cpp
     process_manager.cpp
+
+    aps_finished_storage.cpp
+    aps_p90_estimator.cpp
+    aps_pending_queue.cpp
+    aps_scheduler.cpp
 )
 
 target_link_libraries(process PRIVATE spdlog)
 
-install(TARGETS process
+add_executable(aps_solver
+    aps_solver.cpp
+)
+
+install(TARGETS process aps_solver
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
