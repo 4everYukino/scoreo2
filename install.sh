@@ -63,7 +63,10 @@ pre_install
 # 1. Install application binaries
 echo "[DEBUG] Installing application binaries to $OPT_PREFIX/bin ..."
 install -d -m 755 "$OPT_PREFIX/bin"
-install -m 755 opt/scoreo2/bin/starter "$OPT_PREFIX/bin/"
+for bin in opt/scoreo2/bin/*; do
+    echo "[DEBUG]   Installing '$bin' -> $OPT_PREFIX/bin/ ..."
+    install -m 755 "$bin" "$OPT_PREFIX/bin/"
+done
 
 # 2. Install library files
 echo "[DEBUG] Installing library files to $OPT_PREFIX/lib ..."
