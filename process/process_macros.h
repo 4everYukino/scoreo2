@@ -1,0 +1,8 @@
+#ifndef PROCESS_MACORS_H
+#define PROCESS_MACORS_H
+
+#define DEFAULT_WAIT_TIMEOUT 60000
+
+#define INVALID_PID -1
+
+#endif
