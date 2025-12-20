@@ -27,14 +27,6 @@ if (ENABLE_PROCESS)
 endif()
 # }
 
-# business modules {
-OPTION(ENABLE_SCORING "Enable scoring module" ON)
-
-if (ENABLE_SCORING)
-    add_subdirectory(scoring)
-endif()
-# }
-
 OPTION(ENABLE_TESTS "Enable to build gtest module" ON)
 
 # third-party modules {

@@ -16,13 +16,7 @@ add_library(httpd SHARED
     http_uri_parser.cpp
 )
 
-# first business: scoring {
-target_sources(httpd PRIVATE
-    http_room_handler.cpp
-)
-
-target_link_libraries(httpd PRIVATE fmt nlohmann_json scoring spdlog)
-# }
+target_link_libraries(httpd PRIVATE fmt spdlog)
 
 install(TARGETS httpd
         RUNTIME DESTINATION bin
