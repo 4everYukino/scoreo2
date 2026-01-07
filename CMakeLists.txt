@@ -2,7 +2,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.15)
 
 PROJECT(scoreo2)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(BUILD_SHARED_LIBS ON)
 
 include_directories(
@@ -30,8 +31,6 @@ endif()
 OPTION(ENABLE_TESTS "Enable to build gtest module" ON)
 
 # third-party modules {
-add_subdirectory(src/fmt)
-
 add_subdirectory(src/json)
 
 set(SPDLOG_INSTALL ON)

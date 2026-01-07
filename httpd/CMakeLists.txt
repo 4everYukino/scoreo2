@@ -16,7 +16,7 @@ add_library(httpd SHARED
     http_uri_parser.cpp
 )
 
-target_link_libraries(httpd PRIVATE fmt spdlog)
+target_link_libraries(httpd PRIVATE spdlog)
 
 install(TARGETS httpd
         RUNTIME DESTINATION bin

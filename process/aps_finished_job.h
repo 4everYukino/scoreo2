@@ -10,9 +10,6 @@ namespace aps {
 struct Finished_Job
 {
 public:
-    Finished_Job() = default;
-
-public:
     Job_Specification spec;
 
     std::chrono::steady_clock::time_point start_time;

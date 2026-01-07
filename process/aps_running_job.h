@@ -12,9 +12,6 @@ namespace aps {
 struct Running_Job
 {
 public:
-    Running_Job() = default;
-
-public:
     Job_Specification spec;
 
     Lane lane;

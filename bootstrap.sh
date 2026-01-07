@@ -5,12 +5,18 @@ set -euo pipefail
 # bootstrap.sh - build, (optionally) test, install and package project
 # -----------------------------------------------------------------------------
 
+CLEAN=false
+
+CC="gcc"
+CXX="g++"
+
 PROJECT_NAME="scoreo2"
 BUILD_DIR="$(pwd)"
 BUILD_SUBDIR="${BUILD_DIR}/build"
 STAGING_DIR="${BUILD_DIR}/build/_package"
 INSTALL_PREFIX="/opt/${PROJECT_NAME}"
 
+BUILD_TYPE="Release"
 ENABLE_TESTS="${ENABLE_TESTS:-OFF}"
 VERBOSE="OFF"
 
@@ -28,6 +34,9 @@ Usage: $0 [options]
 
 Options:
   -h, --help               Show this help message
+
+  -c, --clean              Clean build directory before building
+  -d, --debug              Build debug version
   -t, --tests              Enable building and running unit tests
   -v, --verbose            Enable verbose output
 
@@ -49,6 +58,14 @@ function parse_args() {
         usage
         exit 0
         ;;
+      -c|--clean)
+        CLEAN=true
+        shift
+        ;;
+      -d|--debug)
+        BUILD_TYPE="Debug"
+        shift
+        ;;
       -t|--tests)
         ENABLE_TESTS="ON"
         shift
@@ -66,10 +83,27 @@ function parse_args() {
   done
 }
 
+function prepare_compiler() {
+  log "Checking compiler ..."
+
+  if command -v "gcc-13" >/dev/null 2>&1; then
+    CC="gcc-13"
+  fi
+
+  if command -v "g++-13" >/dev/null 2>&1; then
+    CXX="g++-13"
+  fi
+
+  log "Using C Compiler ${CC}, CXX Compiler ${CXX} ..."
+}
+
 function prepare_dirs() {
   log "Preparing build and staging directories ..."
 
-  # rm -rf "${BUILD_SUBDIR}"
+  if $CLEAN; then
+    rm -rf "${BUILD_SUBDIR}"
+  fi
+
   rm -f "${PROJECT_NAME}.tar.gz"
 
   mkdir -p "${BUILD_SUBDIR}"
@@ -80,8 +114,10 @@ function run_cmake() {
   log "Configuring project with CMake (ENABLE_TESTS=${ENABLE_TESTS}, VERBOSE=${VERBOSE}) ..."
   cd "${BUILD_SUBDIR}"
 
-  cmake -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
-        -DCMAKE_BUILD_TYPE=Debug \
+  cmake -DCMAKE_C_COMPILER=${CC} \
+        -DCMAKE_CXX_COMPILER=${CXX} \
+        -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
+        -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
         -DENABLE_TESTS="${ENABLE_TESTS}" \
         -DCMAKE_VERBOSE_MAKEFILE="${VERBOSE}" \
         ..
@@ -138,6 +174,8 @@ function package_project() {
 
 function main() {
   parse_args "$@"
+
+  prepare_compiler
 
   prepare_dirs
 
