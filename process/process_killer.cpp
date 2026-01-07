@@ -1,5 +1,6 @@
 #include "process_killer.h"
 
+#include "rtlib/exponential_backoff_iterator.h"
 #include "rtlib/retry.h"
 
 #include <errno.h>

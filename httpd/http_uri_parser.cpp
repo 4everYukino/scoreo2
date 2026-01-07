@@ -62,7 +62,7 @@ bool HTTP_URI_Parser::parse_path(HTTP_URI& uri)
             // Trace
         }
 
-        path = move(decoded);
+        path = std::move(decoded);
     }
 
     uri.decoded_path = join(uri.path_segments, "/");

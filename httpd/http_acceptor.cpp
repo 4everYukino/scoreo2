@@ -54,7 +54,7 @@ void HTTP_Acceptor::on_accept(beast::error_code ec)
         return;
     }
 
-    make_shared<HTTP_Session>(move(sock_))->run();
+    make_shared<HTTP_Session>(std::move(sock_))->run();
 
     do_accept();
 }

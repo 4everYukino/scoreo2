@@ -8,7 +8,7 @@
 using namespace std;
 
 HTTP_Session::HTTP_Session(asio::ip::tcp::socket&& socket)
-    : sock_(move(socket)),
+    : sock_(std::move(socket)),
       strand_(asio::make_strand(sock_.get_executor()))
 {
 

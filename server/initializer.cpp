@@ -5,7 +5,6 @@
 
 #include "httpd/http_handler_factory.h"
 #include "httpd/http_router.h"
-#include "rtlib/detail_error.h"
 
 #include <fstream>
 #include <filesystem>
@@ -26,9 +25,10 @@ static json parse_from_file(const char* path)
 
     ifstream ifs(path);
     if (!ifs.is_open()) {
-        spdlog::error("Failed to open '{}' to read config, {}",
+        spdlog::error("Failed to open '{}' to read config, errno={}, {}",
                       path,
-                      detail_error());
+                      errno,
+                      strerror(errno));
 
         return res;
     }
@@ -120,9 +120,6 @@ bool Initializer::parse_http_handler_config()
     fs::path cfg = fs::path(CONF_PREFIX) / fs::path(HANDLER_CONFIG_FILE);
 
     json arr = parse_from_file(cfg.c_str());
-    if (arr.empty())
-        return false;
-
     if (!arr.is_array()) {
         spdlog::error("Failed to load handler for {}, the '{}' is not an Object.",
                       PROJECT_NAME,

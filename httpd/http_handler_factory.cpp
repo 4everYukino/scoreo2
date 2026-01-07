@@ -14,7 +14,7 @@ void HTTP_Handler_Factory::dump()
 
 void HTTP_Handler_Factory::register_handler(const string& name, Handler_Creator fn)
 {
-    creators_[name] = move(fn);
+    creators_[name] = std::move(fn);
 }
 
 void HTTP_Handler_Factory::unregister_handler(const string& name)

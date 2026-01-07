@@ -9,7 +9,7 @@
 #define SPRINTF_INITIAL_SIZE 128
 
 template <typename T>
-static int string_vsprintf(std::basic_string<T>& str,
+int string_vsprintf(std::basic_string<T>& str,
                            const char* fmt,
                            va_list args,
                            bool append = false)
