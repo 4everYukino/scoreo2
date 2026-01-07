@@ -1,8 +1,6 @@
 #ifndef RETRY_H
 #define RETRY_H
 
-#include "exponential_backoff_iterator.h"
-
 #include <thread>
 
 template <typename Range, typename Functor>
