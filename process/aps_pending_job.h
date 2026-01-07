@@ -8,9 +8,6 @@ namespace aps {
 struct Pending_Job
 {
 public:
-    Pending_Job() = default;
-
-public:
     Job_Specification spec;
 
     Lane lane = Lane::FAST;

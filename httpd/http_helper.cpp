@@ -1,8 +1,7 @@
 #include "http_helper.h"
 
 #include "rtlib/inline_utils.h"
-
-#include <fmt/core.h>
+#include "rtlib/string_sprintf.h"
 
 using namespace std;
 
@@ -22,11 +21,14 @@ void clear(HTTP_Response& res)
 
 string header(const HTTP_Request& req)
 {
-    return fmt::format("{} {} HTTP/{}.{}",
-                       req.method_string(),
-                       req.target(),
-                       req.version() / 10,
-                       req.version() % 10);
+    auto method = req.method_string();
+    auto target = req.target();
+
+    return string_sprintf("%.*s %.*s HTTP/%d.%d",
+                          method.length(), method.data(),
+                          target.length(), target.data(),
+                          req.version() / 10,
+                          req.version() % 10);
 }
 
 bool decode_percent(const char* src, size_t len, string& res, int flags)
