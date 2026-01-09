@@ -6,6 +6,9 @@
 
 using namespace std;
 
+namespace asio = boost::asio;
+namespace beast = boost::beast;
+
 HTTP_Acceptor::HTTP_Acceptor(asio::io_context& ioc,
                              const asio::ip::tcp::endpoint& endpoint)
     : acceptor_(ioc), sock_(ioc)
@@ -43,20 +46,18 @@ void HTTP_Acceptor::do_accept()
 
 void HTTP_Acceptor::on_accept(beast::error_code ec)
 {
-    // Nothing to do any more.
-    if (ec == boost::system::errc::operation_canceled) {
-        return;
-    }
-
     if (ec) {
-        // Don't accept more connections if acceptor fails
-        spdlog::error("Failed to accept connection, beast error: {}", ec.message());
-        return;
+        if (ec != boost::system::errc::operation_canceled)
+            spdlog::error("Failed to accept connection, beast error: {}", ec.message());
+
+        return close();
     }
 
-    make_shared<HTTP_Session>(std::move(sock_))->run();
+    auto s = make_shared<HTTP_Session>(std::move(sock_));
 
-    do_accept();
+    s->run();
+
+    return do_accept();
 }
 
 shared_ptr<HTTP_Acceptor> make_acceptor(asio::io_context& ioc,

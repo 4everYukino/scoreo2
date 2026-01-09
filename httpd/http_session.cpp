@@ -7,97 +7,91 @@
 
 using namespace std;
 
-HTTP_Session::HTTP_Session(asio::ip::tcp::socket&& socket)
-    : sock_(std::move(socket)),
-      strand_(asio::make_strand(sock_.get_executor()))
+namespace asio = boost::asio;
+namespace beast = boost::beast;
+namespace http = beast::http;
+
+HTTP_Session::HTTP_Session(asio::ip::tcp::socket&& sock)
+    : sock_(std::move(sock))
 {
 
 }
 
 void HTTP_Session::run()
 {
-    do_read();
+    handle_header_reading();
 }
 
-void HTTP_Session::do_read()
+void HTTP_Session::handle_header_reading()
 {
-    hlpr::clear(req_);
-    beast::http::async_read(
+    http::async_read_header(
         sock_,
         buff_,
-        req_,
-        asio::bind_executor(
-            strand_,
-            [self = shared_from_this()](beast::error_code ec,
-                                        size_t bytes_transferred) {
-                self->on_read(ec, bytes_transferred);
-            }
-        )
+        parser_,
+        [self = shared_from_this()](beast::error_code ec,
+                                    size_t bytes_transferred) {
+            self->handle_header_received(ec, bytes_transferred);
+        }
     );
 }
 
-void HTTP_Session::on_read(beast::error_code ec, size_t bytes_transferred)
+void HTTP_Session::handle_header_received(beast::error_code ec, size_t bytes_transferred)
 {
     if (ec) {
         if (ec != beast::http::error::end_of_stream)
             spdlog::error("Internal error occured while reading socket, {}", ec.message());
 
-        return do_close();
+        return handle_close();
     }
 
+    const auto& header = parser_.get();
+
     spdlog::debug("Received a HTTP request '{}' from client {}:{}",
-                  hlpr::header(req_),
+                  header.target(),
                   sock_.remote_endpoint().address().to_string(),
                   sock_.remote_endpoint().port());
 
     if (!handle_request()) {
         spdlog::error("Failed to handle HTTP request '{}' from client {}:{}",
-                      hlpr::header(req_),
+                      header.target(),
                       sock_.remote_endpoint().address().to_string(),
                       sock_.remote_endpoint().port());
-    }
 
-    do_write();
+        return handle_close();
+    }
 }
 
 bool HTTP_Session::handle_request()
 {
-    hlpr::clear(res_);
-    return Router::instance()->dispatch(req_, res_);
+    /// TODO:
+    ///   implement ..
+
+    return true;
 }
 
-void HTTP_Session::do_write()
+void HTTP_Session::handle_writing()
 {
-    res_.prepare_payload();
-    beast::http::async_write(
-        sock_,
-        res_,
-        asio::bind_executor(
-            strand_,
-            [self = shared_from_this()](beast::error_code ec,
-                                        size_t bytes_transferred) {
-                self->on_write(ec, bytes_transferred);
-            }
-        )
-    );
+
 }
 
-void HTTP_Session::on_write(beast::error_code ec, size_t bytes_transferred)
+void HTTP_Session::handle_writing_finished(beast::error_code ec,
+                                           size_t bytes_transferred,
+                                           bool keep_alive)
 {
     if (ec) {
         spdlog::error("Internal error occured while writing socket, {}", ec.message());
-        return do_close();
+        return handle_close();
     }
 
-    if (!res_.keep_alive()) {
-        return do_close();
+    if (!keep_alive) {
+        return handle_close();
     }
 
-    // Read another request
-    do_read();
+    // Keep alive, read another request.
+    return handle_header_reading();
 }
 
-void HTTP_Session::do_close()
+void HTTP_Session::handle_close()
 {
     beast::error_code ec;
 
