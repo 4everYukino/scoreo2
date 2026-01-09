@@ -7,105 +7,95 @@
 
 using namespace std;
 
-HTTP_Session::HTTP_Session(asio::ip::tcp::socket&& socket)
-    : sock_(std::move(socket)),
-      strand_(asio::make_strand(sock_.get_executor()))
+namespace asio = boost::asio;
+namespace beast = boost::beast;
+namespace http = beast::http;
+
+#define RECEIVE_HEADER_TIMEOUT 30
+
+HTTP_Session::HTTP_Session(beast::tcp_stream&& stream)
+    : stream_(std::move(stream))
 {
 
 }
 
 void HTTP_Session::run()
 {
-    do_read();
+    handle_header_reading();
 }
 
-void HTTP_Session::do_read()
+void HTTP_Session::handle_header_reading()
 {
-    hlpr::clear(req_);
-    beast::http::async_read(
-        sock_,
+    stream_.expires_after(std::chrono::seconds(RECEIVE_HEADER_TIMEOUT));
+    http::async_read_header(
+        stream_,
         buff_,
-        req_,
-        asio::bind_executor(
-            strand_,
-            [self = shared_from_this()](beast::error_code ec,
-                                        size_t bytes_transferred) {
-                self->on_read(ec, bytes_transferred);
-            }
-        )
+        parser_,
+        [self = shared_from_this()](beast::error_code ec,
+                                    std::size_t bytes_transferred) {
+            self->handle_header_received(ec, bytes_transferred);
+        }
     );
 }
 
-void HTTP_Session::on_read(beast::error_code ec, size_t bytes_transferred)
+void HTTP_Session::handle_header_received(beast::error_code ec, std::size_t bytes_transferred)
 {
     if (ec) {
         if (ec != beast::http::error::end_of_stream)
             spdlog::error("Internal error occured while reading socket, {}", ec.message());
 
-        return do_close();
+        return close();
     }
 
+    const auto& header = parser_.get();
+    const auto& ep = stream_.socket().remote_endpoint();
     spdlog::debug("Received a HTTP request '{}' from client {}:{}",
-                  hlpr::header(req_),
-                  sock_.remote_endpoint().address().to_string(),
-                  sock_.remote_endpoint().port());
+                  header.target(),
+                  ep.address().to_string(),
+                  ep.port());
 
     if (!handle_request()) {
         spdlog::error("Failed to handle HTTP request '{}' from client {}:{}",
-                      hlpr::header(req_),
-                      sock_.remote_endpoint().address().to_string(),
-                      sock_.remote_endpoint().port());
-    }
+                      header.target(),
+                      ep.address().to_string(),
+                      ep.port());
 
-    do_write();
+        return close();
+    }
 }
 
 bool HTTP_Session::handle_request()
 {
-    hlpr::clear(res_);
-    return Router::instance()->dispatch(req_, res_);
+    /// TODO:
+    ///   implement ..
+
+    return true;
 }
 
-void HTTP_Session::do_write()
-{
-    res_.prepare_payload();
-    beast::http::async_write(
-        sock_,
-        res_,
-        asio::bind_executor(
-            strand_,
-            [self = shared_from_this()](beast::error_code ec,
-                                        size_t bytes_transferred) {
-                self->on_write(ec, bytes_transferred);
-            }
-        )
-    );
-}
-
-void HTTP_Session::on_write(beast::error_code ec, size_t bytes_transferred)
+void HTTP_Session::handle_writing_finished(beast::error_code ec,
+                                           size_t bytes_transferred,
+                                           bool keep_alive)
 {
     if (ec) {
         spdlog::error("Internal error occured while writing socket, {}", ec.message());
-        return do_close();
+        return close();
     }
 
-    if (!res_.keep_alive()) {
-        return do_close();
+    if (!keep_alive) {
+        return close();
     }
 
-    // Read another request
-    do_read();
+    // Keep alive, read another request.
+    return handle_header_reading();
 }
 
-void HTTP_Session::do_close()
+void HTTP_Session::close()
 {
-    beast::error_code ec;
+    const auto& ep = stream_.socket().remote_endpoint();
 
-    sock_.shutdown(asio::ip::tcp::socket::shutdown_send, ec);
+    spdlog::debug("Close HTTP Session with client {}:{}",
+                  ep.address().to_string(),
+                  ep.port());
 
-    spdlog::debug("Closing HTTP Session with client '{}:{}'",
-                  sock_.remote_endpoint().address().to_string(),
-                  sock_.remote_endpoint().port());
-
-    sock_.close(ec);
+    stream_.close();
 }

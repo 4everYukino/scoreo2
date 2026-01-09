@@ -2,31 +2,27 @@
 #define HTTP_ROUTER_H
 
 #include "http_handler.h"
-#include "http_request.h"
-#include "http_response.h"
 
-#include <map>
-#include <memory>
-
-class Router
+class HTTP_Router
 {
 public:
-    static Router* instance() {
-        static Router r;
+    static HTTP_Router* instance() {
+        static HTTP_Router r;
         return &r;
     }
 
 private:
-    Router() = default;
-    ~Router() = default;
+    HTTP_Router() = default;
+    ~HTTP_Router() = default;
 
 public:
-    bool add(const std::string& path, HTTP_Handler* handler);
+    void add(const std::string& path, const std::string& name);
 
     bool dispatch(const HTTP_Request& req, HTTP_Response& res);
 
 private:
-    std::map<std::string, std::unique_ptr<HTTP_Handler>> routes_;
+    /// Path -> HTTP Handler Name
+    std::map<std::string, std::string> routes_;
 };
 
 #endif

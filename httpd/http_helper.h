@@ -22,8 +22,6 @@ enum {
 void clear(HTTP_Request& req);
 void clear(HTTP_Response& res);
 
-std::string header(const HTTP_Request& req);
-
 bool decode_percent(const char* src, size_t len, std::string& res, int flags);
 
 bool decode_path(const char* src, size_t len, std::string& res, int flags = HLPR_FLAG_SLASH);

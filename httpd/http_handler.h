@@ -7,6 +7,9 @@
 class HTTP_Handler
 {
 public:
+    ~HTTP_Handler() = default;
+
+public:
     bool handle_request(const HTTP_Request& req, HTTP_Response& res);
 
     /// RESTful {
