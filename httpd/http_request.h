@@ -5,6 +5,6 @@
 
 namespace beast = boost::beast;
 
-using HTTP_Request = beast::http::request<beast::http::string_body>;
+using HTTP_Request = beast::http::request<beast::http::dynamic_body>;
 
 #endif

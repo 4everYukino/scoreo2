@@ -8,6 +8,8 @@
 #include <string>
 #include <unordered_map>
 
+using HTTP_Handler_Creator = std::function<std::unique_ptr<HTTP_Handler>()>;
+
 class HTTP_Handler_Factory
 {
 public:
@@ -21,11 +23,9 @@ private:
     ~HTTP_Handler_Factory() = default;
 
 public:
-    using Handler_Creator = std::function<std::unique_ptr<HTTP_Handler>()>;
-
     void dump();
 
-    void register_handler(const std::string& name, Handler_Creator fn);
+    void register_handler(const std::string& name, HTTP_Handler_Creator fn);
     void unregister_handler(const std::string& name);
 
     bool contains(const std::string& name);
@@ -33,8 +33,8 @@ public:
     std::unique_ptr<HTTP_Handler> create(const std::string& name);
 
 private:
-    /// key: name, value: creator
-    std::unordered_map<std::string, Handler_Creator> creators_;
+    /// HTTP Handler Name -> Creator
+    std::unordered_map<std::string, HTTP_Handler_Creator> creators_;
 };
 
 #define REGISTER_HTTP_HANDLER(HANDLER) \

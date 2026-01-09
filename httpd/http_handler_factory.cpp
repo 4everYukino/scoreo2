@@ -12,7 +12,7 @@ void HTTP_Handler_Factory::dump()
     }
 }
 
-void HTTP_Handler_Factory::register_handler(const string& name, Handler_Creator fn)
+void HTTP_Handler_Factory::register_handler(const string& name, HTTP_Handler_Creator fn)
 {
     creators_[name] = std::move(fn);
 }
@@ -36,6 +36,6 @@ unique_ptr<HTTP_Handler> HTTP_Handler_Factory::create(const string& name)
     if (it == creators_.end())
         return nullptr;
 
-    Handler_Creator& c = it->second;
+    HTTP_Handler_Creator& c = it->second;
     return c();
 }

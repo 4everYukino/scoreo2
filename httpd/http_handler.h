@@ -7,21 +7,24 @@
 class HTTP_Handler
 {
 public:
-    bool handle_request(const HTTP_Request& req, HTTP_Response& res);
+    ~HTTP_Handler() = default;
+
+public:
+    HTTP_Response handle_request(const HTTP_Request& req);
 
     /// RESTful {
-    bool handle_get(const HTTP_Request& req, HTTP_Response& res);
-    bool handle_post(const HTTP_Request& req, HTTP_Response& res);
-    bool handle_put(const HTTP_Request& req, HTTP_Response& res);
-    bool handle_delete(const HTTP_Request& req, HTTP_Response& res);
+    HTTP_Response handle_get(const HTTP_Request& req);
+    HTTP_Response handle_post(const HTTP_Request& req);
+    HTTP_Response handle_put(const HTTP_Request& req);
+    HTTP_Response handle_delete(const HTTP_Request& req);
     /// }
 
 protected:
     /// implement {
-    virtual bool handle_get_i(const HTTP_Request& req, HTTP_Response& res);
-    virtual bool handle_post_i(const HTTP_Request& req, HTTP_Response& res);
-    virtual bool handle_put_i(const HTTP_Request& req, HTTP_Response& res);
-    virtual bool handle_delete_i(const HTTP_Request& req, HTTP_Response& res);
+    virtual HTTP_Response handle_get_i(const HTTP_Request& req);
+    virtual HTTP_Response handle_post_i(const HTTP_Request& req);
+    virtual HTTP_Response handle_put_i(const HTTP_Request& req);
+    virtual HTTP_Response handle_delete_i(const HTTP_Request& req);
     /// }
 };
 
