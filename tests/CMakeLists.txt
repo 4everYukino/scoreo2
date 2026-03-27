@@ -9,6 +9,7 @@ add_executable(run_tests
     test_main.cpp
 
     http_uri_parser_test.cpp
+    path_normalize_test.cpp
 )
 
 target_link_libraries(run_tests
