@@ -1,9 +1,9 @@
 #include "http_helper.h"
 
 #include "rtlib/inline_utils.h"
-#include "rtlib/string_sprintf.h"
 
 using namespace std;
+namespace http = boost::beast::http;
 
 #define HEX_PAIR_LEN 3
 
@@ -12,23 +12,6 @@ namespace hlpr {
 void clear(HTTP_Request& req)
 {
     req = {};
-}
-
-void clear(HTTP_Response& res)
-{
-    res = {};
-}
-
-string header(const HTTP_Request& req)
-{
-    auto method = req.method_string();
-    auto target = req.target();
-
-    return string_sprintf("%.*s %.*s HTTP/%d.%d",
-                          method.length(), method.data(),
-                          target.length(), target.data(),
-                          req.version() / 10,
-                          req.version() % 10);
 }
 
 bool decode_percent(const char* src, size_t len, string& res, int flags)
@@ -106,16 +89,46 @@ string decode_query(const char* src, size_t len, int flags)
     return res;
 }
 
-void init_response(HTTP_Response& res, bool keep_alive)
+HTTP_Response stock_response(http::status status, bool keep_alive, string body)
 {
-    /// STATUS LINE {
+    HTTP_String_Response res{status, 11};
+    init_response(res, keep_alive);
+    res.set(http::field::content_type, "text/plain; charset=utf-8");
+    res.body() = std::move(body);
+    res.prepare_payload();
+    return HTTP_Response(std::move(res));
+}
 
-    res.version(11); ///< HTTP/1.1
-    res.keep_alive(keep_alive);
+HTTP_Response bad_request(bool keep_alive, string body)
+{
+    if (body.empty())
+        body = "Bad Request";
 
-    /// }
+    return stock_response(http::status::bad_request, keep_alive, std::move(body));
+}
 
-    res.set("Server", "scoreo2");
+HTTP_Response not_found(bool keep_alive, string body)
+{
+    if (body.empty())
+        body = "Not Found";
+
+    return stock_response(http::status::not_found, keep_alive, std::move(body));
+}
+
+HTTP_Response not_implemented(bool keep_alive, string body)
+{
+    if (body.empty())
+        body = "Not Implemented";
+
+    return stock_response(http::status::not_implemented, keep_alive, std::move(body));
+}
+
+HTTP_Response internal_server_error(bool keep_alive, string body)
+{
+    if (body.empty())
+        body = "Internal Server Error";
+
+    return stock_response(http::status::internal_server_error, keep_alive, std::move(body));
 }
 
 };

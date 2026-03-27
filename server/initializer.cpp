@@ -143,14 +143,8 @@ bool Initializer::parse_http_handler_config()
             continue;
         }
 
-        unique_ptr<HTTP_Handler> h = HTTP_Handler_Factory::instance()->create(handler);
-        if (h && !Router::instance()->add(path, h.get())) {
-            spdlog::error("Failed to add handler '{}' to Router ...", handler);
-            continue;
-        }
-
-        spdlog::debug("Succeed to add HTTP handler '{}' to Router", handler);
-        h.release();
+        HTTP_Router::instance()->add(path, handler);
+        spdlog::debug("[HTTP_Router] Using '{}' to handler '{}'.", handler, path);
     }
 
     return true;

@@ -10,9 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    container:
-      image: gcc:13
+    runs-on: ubuntu-24.04
     steps:
     - name: checkout
       uses: actions/checkout@v4
@@ -22,8 +20,8 @@ jobs:
 
     - name: install deps
       run: |
-        apt update
-        apt install -y cmake libboost-dev
+        sudo apt-get update
+        sudo apt-get install -y cmake g++-13 libboost-dev
 
     - name: build
       run: ./bootstrap.sh -c -d -t

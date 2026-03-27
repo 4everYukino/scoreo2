@@ -2,13 +2,18 @@
 
 #include "http_session.h"
 
+#include <boost/beast/core/tcp_stream.hpp>
+
 #include <spdlog/spdlog.h>
 
 using namespace std;
 
+namespace asio = boost::asio;
+namespace beast = boost::beast;
+
 HTTP_Acceptor::HTTP_Acceptor(asio::io_context& ioc,
                              const asio::ip::tcp::endpoint& endpoint)
-    : acceptor_(ioc), sock_(ioc)
+    : acceptor_(ioc)
 {
     acceptor_.open(endpoint.protocol());
 
@@ -21,7 +26,7 @@ HTTP_Acceptor::HTTP_Acceptor(asio::io_context& ioc,
 
 void HTTP_Acceptor::run()
 {
-    do_accept();
+    accept();
 }
 
 void HTTP_Acceptor::close()
@@ -32,31 +37,27 @@ void HTTP_Acceptor::close()
     }
 }
 
-void HTTP_Acceptor::do_accept()
+void HTTP_Acceptor::accept()
 {
     acceptor_.async_accept(
-        sock_,
-        [self = shared_from_this()](beast::error_code ec) {
-            self->on_accept(ec);
-        });
-}
+        [self = shared_from_this()](const beast::error_code& ec,
+                                    boost::asio::ip::tcp::socket peer) {
+            if (ec) {
+                if (ec != boost::system::errc::operation_canceled)
+                    spdlog::error("Failed to accept connection, beast error: {}", ec.message());
 
-void HTTP_Acceptor::on_accept(beast::error_code ec)
-{
-    // Nothing to do any more.
-    if (ec == boost::system::errc::operation_canceled) {
-        return;
-    }
+                self->close();
+            } else {
+                beast::tcp_stream stream(std::move(peer));
 
-    if (ec) {
-        // Don't accept more connections if acceptor fails
-        spdlog::error("Failed to accept connection, beast error: {}", ec.message());
-        return;
-    }
+                auto s = std::make_shared<HTTP_Session>(std::move(stream));
 
-    make_shared<HTTP_Session>(std::move(sock_))->run();
+                s->run();
 
-    do_accept();
+                self->accept();
+            }
+        }
+    );
 }
 
 shared_ptr<HTTP_Acceptor> make_acceptor(asio::io_context& ioc,

@@ -4,6 +4,8 @@
 #include "http_request.h"
 #include "http_response.h"
 
+#include <boost/beast/http/status.hpp>
+
 #include <string>
 
 /// @namespace hlpr
@@ -20,9 +22,6 @@ enum {
 };
 
 void clear(HTTP_Request& req);
-void clear(HTTP_Response& res);
-
-std::string header(const HTTP_Request& req);
 
 bool decode_percent(const char* src, size_t len, std::string& res, int flags);
 
@@ -32,8 +31,22 @@ std::string decode_path(const char* src, size_t len, int flags = HLPR_FLAG_SLASH
 bool decode_query(const char* src, size_t len, std::string& res, int flags = HLPR_FLAG_SLASH | HLPR_FLAG_SPACE);
 std::string decode_query(const char* src, size_t len, int flags = HLPR_FLAG_SLASH | HLPR_FLAG_SPACE);
 
-/// @brief Set default attributes for HTTP Response.
-void init_response(HTTP_Response& res, bool keep_alive);
+template <class Body>
+void init_response(boost::beast::http::response<Body>& res, bool keep_alive)
+{
+    res.version(11); ///< HTTP/1.1
+    res.keep_alive(keep_alive);
+    res.set("Server", "scoreo2");
+}
+
+HTTP_Response stock_response(boost::beast::http::status status,
+                             bool keep_alive,
+                             std::string body = {});
+
+HTTP_Response bad_request(bool keep_alive, std::string body = {});
+HTTP_Response not_found(bool keep_alive, std::string body = {});
+HTTP_Response not_implemented(bool keep_alive, std::string body = {});
+HTTP_Response internal_server_error(bool keep_alive, std::string body = {});
 
 };
 
