@@ -50,12 +50,13 @@ bool HTTP_URI_Parser::parse_i(HTTP_URI& uri)
 
 bool HTTP_URI_Parser::parse_path(HTTP_URI& uri)
 {
-    split(uri.path_segments,
+    vector<string> segments;
+    split(segments,
           uri.raw_path,
           boost::is_any_of("/"));
 
     string decoded;
-    for (auto& path : uri.path_segments) {
+    for (auto& path : segments) {
         if (!hlpr::decode_path(path.c_str(),
                                path.size(),
                                decoded)) {
@@ -65,7 +66,7 @@ bool HTTP_URI_Parser::parse_path(HTTP_URI& uri)
         path = std::move(decoded);
     }
 
-    uri.decoded_path = join(uri.path_segments, "/");
+    uri.decoded_path = join(segments, "/");
 
     /// TODO:
     /// Normalize ...
@@ -75,21 +76,19 @@ bool HTTP_URI_Parser::parse_path(HTTP_URI& uri)
 
 bool HTTP_URI_Parser::parse_query(HTTP_URI& uri)
 {
-    auto tokens = tokenize(uri.raw_query, "&");
-    transform(
-        tokens.begin(),
-        tokens.end(),
-        back_inserter(uri.query_params),
-        [](const string& t) {
-            const auto epos = t.find('=');
-            if (epos == string::npos)
-                return make_pair(hlpr::decode_query(t.c_str(), t.size()),
-                                 string());
-
-            return make_pair(hlpr::decode_query(t.c_str(), epos),
-                             hlpr::decode_query(t.c_str() + epos + 1, t.size() - epos - 1));
+    string key, value;
+    for (auto& token : tokenize(uri.raw_query, "&")) {
+        const auto epos = token.find('=');
+        if (epos == string::npos) {
+            key = hlpr::decode_query(token.c_str(), token.size());
+            value.clear();
+        } else {
+            key = hlpr::decode_query(token.c_str(), epos);
+            value = hlpr::decode_query(token.c_str() + epos + 1, token.size() - epos - 1);
         }
-    );
+
+        uri.query_params.emplace_back(key, value);
+    }
 
     return true;
 }

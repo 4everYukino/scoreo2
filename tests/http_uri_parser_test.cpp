@@ -64,6 +64,7 @@ protected:
         for (size_t i = 0; i < c.exp_query.size(); ++i) {
             EXPECT_EQ(c.exp_query[i].first, uri.query_params[i].first)
                 << "Key mismatch at index " << i;
+
             EXPECT_EQ(c.exp_query[i].second, uri.query_params[i].second)
                 << "Value mismatch at index " << i;
         }
