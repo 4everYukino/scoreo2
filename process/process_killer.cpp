@@ -1,7 +1,6 @@
 #include "process_killer.h"
 
 #include "rtlib/exponential_backoff_iterator.h"
-#include "rtlib/retry.h"
 
 #include <errno.h>
 #include <signal.h>
@@ -31,13 +30,12 @@ bool Process_Killer::elegant_kill(pid_t pid)
     if (!alive(pid))
         return false;
 
-    auto rng = exponential_backoff(1, 3);
-    return retry(rng,
-                 [pid]() {
-                     return ::kill(pid, SIGTERM) == 0 &&!alive(pid);
-                 }) ||
-               retry(rng,
-                     [pid]() {
-                         return ::kill(pid, SIGKILL) == 0 && !alive(pid);
-                     });
+    return exponential_retry(1, 3,
+                             [pid]() {
+                                 return ::kill(pid, SIGTERM) == 0 && !alive(pid);
+                             }) ||
+               exponential_retry(1, 3,
+                                 [pid]() {
+                                     return ::kill(pid, SIGKILL) == 0 && !alive(pid);
+                                 });
 }

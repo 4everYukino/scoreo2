@@ -1,8 +1,10 @@
 #ifndef EXPONENTIAL_BACKOFF_ITERATOR_H
 #define EXPONENTIAL_BACKOFF_ITERATOR_H
 
+#include <chrono>
 #include <memory>
 #include <random>
+#include <thread>
 
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/range/iterator_range.hpp>
@@ -114,6 +116,28 @@ exponential_backoff(unsigned base,
                                      capped,
                                      jitter)
     );
+}
+
+template <typename Functor>
+bool exponential_retry(unsigned base,
+                       unsigned max_retries,
+                       Functor&& func,
+                       unsigned capped = UINT_MAX,
+                       bool jitter = true)
+{
+    if (func())
+        return true;
+
+    for (auto i : exponential_backoff(base, max_retries, capped, jitter)) {
+        std::this_thread::sleep_for(
+            std::chrono::seconds(i)
+        );
+
+        if (func())
+            return true;
+    }
+
+    return false;
 }
 
 #endif
