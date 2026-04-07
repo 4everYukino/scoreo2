@@ -1,7 +1,7 @@
 #include "config.h"
 
-#include "configure.h"
 #include "initializer.h"
+#include "settings.h"
 
 #include "httpd/http_acceptor.h"
 
@@ -17,15 +17,15 @@ boost::system::error_code ec;
 
 int main(int argc, char** argv)
 {
-    if (!Initializer()()) {
+    if (!Initializer().init()) {
         spdlog::error("The initializer cannot init server, see logs for more details.");
         return EXIT_FAILURE;
     }
 
     asio::io_context ioc;
     asio::ip::tcp::endpoint ep(
-        asio::ip::make_address(Config::instance()->host, ec),
-        Config::instance()->port
+        asio::ip::make_address(Settings::instance()->host, ec),
+        Settings::instance()->port
     );
 
     if (ec) {

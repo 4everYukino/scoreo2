@@ -1,7 +1,7 @@
 #include "initializer.h"
 
 #include "config.h"
-#include "configure.h"
+#include "settings.h"
 
 #include "httpd/http_handler_factory.h"
 #include "httpd/http_router.h"
@@ -45,7 +45,7 @@ static json parse_from_file(const char* path)
     return res;
 }
 
-bool Initializer::operator()()
+bool Initializer::init()
 {
     return init_spdlog() &&
                parse_global_config() &&
@@ -99,17 +99,17 @@ bool Initializer::parse_global_config()
 
     if (obj.contains("host")) {
         if (obj.at("host").is_string())
-            Config::instance()->host = obj.at("host").get<string>();
+            Settings::instance()->host = obj.at("host").get<string>();
     }
 
     if (obj.contains("port")) {
         if (obj.at("port").is_number_unsigned())
-            Config::instance()->port = obj.at("port").get<unsigned short>();
+            Settings::instance()->port = obj.at("port").get<unsigned short>();
     }
 
     if (obj.contains("threads")) {
         if (obj.at("threads").is_number_integer())
-            Config::instance()->threads = obj.at("threads").get<int>();
+            Settings::instance()->threads = obj.at("threads").get<int>();
     }
 
     return true;

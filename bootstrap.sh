@@ -156,8 +156,6 @@ function install_project() {
   fi
 
   make $opts > /dev/null
-
-  install -m 755 "${BUILD_DIR}/install.sh" "${STAGING_DIR}"
 }
 
 function package_project() {
@@ -167,7 +165,7 @@ function package_project() {
   tar --exclude="opt/${PROJECT_NAME}/include" \
       --exclude="opt/${PROJECT_NAME}/lib/cmake" \
       --exclude="opt/${PROJECT_NAME}/lib/pkgconfig" \
-      -czf "${BUILD_DIR}/${PROJECT_NAME}.tar.gz" etc lib opt "install.sh"
+      -czf "${BUILD_DIR}/${PROJECT_NAME}.tar.gz" etc lib opt
 
   log "Package '${BUILD_DIR}/${PROJECT_NAME}.tar.gz' created."
 }

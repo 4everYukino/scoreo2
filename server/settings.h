@@ -1,19 +1,19 @@
-#ifndef CONFIGURE_H
-#define CONFIGURE_H
+#ifndef SETTINGS_H
+#define SETTINGS_H
 
 #include <string>
 
-class Config
+class Settings
 {
 public:
-    static Config* instance() {
-        static Config inst;
+    static Settings* instance() {
+        static Settings inst;
         return &inst;
     }
 
 private:
-    Config() = default;
-    ~Config() = default;
+    Settings() = default;
+    ~Settings() = default;
 
 public:
     std::string host = "127.0.0.1";

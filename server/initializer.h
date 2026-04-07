@@ -4,7 +4,7 @@
 class Initializer
 {
 public:
-    bool operator()();
+    bool init();
 
 private:
     bool init_spdlog();
