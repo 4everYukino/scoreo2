@@ -16,8 +16,13 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
 add_subdirectory(server)
 
 # basic modules {
+OPTION(ENABLE_CURL_CLIENT "Enable cURL client module" ON)
 OPTION(ENABLE_HTTPD "Enable httpd module" ON)
 OPTION(ENABLE_PROCESS "Enable process module" ON)
+
+if (ENABLE_CURL_CLIENT)
+    add_subdirectory(curl_client)
+endif()
 
 if (ENABLE_HTTPD)
     add_subdirectory(httpd)
