@@ -21,7 +21,7 @@ jobs:
     - name: install deps
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake g++-13 libboost-dev
+        sudo apt-get install -y cmake g++-13 libboost-dev libcurl4-openssl-dev
 
     - name: build
       run: ./bootstrap.sh -c -d -t
