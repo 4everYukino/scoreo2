@@ -19,6 +19,7 @@ add_subdirectory(server)
 OPTION(ENABLE_CURL_CLIENT "Enable cURL client module" ON)
 OPTION(ENABLE_HTTPD "Enable httpd module" ON)
 OPTION(ENABLE_PROCESS "Enable process module" ON)
+OPTION(ENABLE_QTLAB "Enable qtlab module" ON)
 
 if (ENABLE_CURL_CLIENT)
     add_subdirectory(curl_client)
@@ -30,6 +31,10 @@ endif()
 
 if (ENABLE_PROCESS)
     add_subdirectory(process)
+endif()
+
+if (ENABLE_QTLAB)
+    add_subdirectory(qtlab)
 endif()
 # }
 

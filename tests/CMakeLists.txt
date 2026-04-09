@@ -10,12 +10,14 @@ add_executable(run_tests
 
     http_uri_parser_test.cpp
     path_normalize_test.cpp
+    qtlab_daily_bar_repo_test.cpp
 )
 
 target_link_libraries(run_tests
     PRIVATE
         gtest
         gtest_main
+        qtlab
 
         httpd
 )

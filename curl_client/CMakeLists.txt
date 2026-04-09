@@ -16,3 +16,8 @@ target_link_libraries(curl_client
         CURL::libcurl
     PRIVATE
         spdlog)
+
+install(TARGETS curl_client
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
