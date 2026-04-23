@@ -7,6 +7,7 @@
 namespace beast = boost::beast;
 
 using HTTP_Response = beast::http::message_generator;
+
 using HTTP_String_Response = beast::http::response<beast::http::string_body>;
 
 #endif

@@ -12,7 +12,12 @@ namespace beast = boost::beast;
 
 void HTTP_Router::add(const string& path, const string& name)
 {
-    routes_[path] = name;
+    routes_.insert(path, name, true);
+}
+
+void HTTP_Router::clear()
+{
+    routes_.clear();
 }
 
 HTTP_Response HTTP_Router::dispatch(const HTTP_Request& req)
@@ -23,15 +28,14 @@ HTTP_Response HTTP_Router::dispatch(const HTTP_Request& req)
         return hlpr::bad_request(req.keep_alive());
     }
 
-    /// TODO:
-    ///   * Layered Routing
+    spdlog::trace("Received request raw path '{}', parsed path '{}' ...", uri.raw_path, uri.decoded_path);
 
-    const auto it = routes_.find(uri.decoded_path);
-    if (it == routes_.end()) {
+    const auto handler = routes_.find(uri.decoded_path);
+    if (!handler) {
         return hlpr::not_found(req.keep_alive());
     }
 
-    auto h = HTTP_Handler_Factory::instance()->create(it->second);
+    auto h = HTTP_Handler_Factory::instance()->create(*handler);
     if (!h)
         return hlpr::internal_server_error(req.keep_alive());
 

@@ -10,9 +10,9 @@
 
 template <typename T>
 int string_vsprintf(std::basic_string<T>& str,
-                           const char* fmt,
-                           va_list args,
-                           bool append = false)
+                    const char* fmt,
+                    va_list args,
+                    bool append = false)
 {
     size_t pos = 0;
     if (append)

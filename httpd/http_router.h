@@ -2,8 +2,8 @@
 #define HTTP_ROUTER_H
 
 #include "http_handler.h"
+#include "infra/string_trie.h"
 
-#include <map>
 #include <string>
 
 class HTTP_Router
@@ -20,12 +20,13 @@ private:
 
 public:
     void add(const std::string& path, const std::string& name);
+    void clear();
 
     HTTP_Response dispatch(const HTTP_Request& req);
 
 private:
     /// Path -> HTTP Handler Name
-    std::map<std::string, std::string> routes_;
+    String_Trie<std::string> routes_;
 };
 
 #endif

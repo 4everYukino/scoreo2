@@ -21,7 +21,7 @@ public:
     std::string target; ///< raw
 
     std::string raw_path;
-    std::string decoded_path;
+    std::string decoded_path; ///< Normalized
 
     std::string raw_query;
     std::vector<std::pair<std::string, std::string>> query_params; ///< decoded

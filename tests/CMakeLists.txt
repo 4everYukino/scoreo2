@@ -8,8 +8,10 @@ include_directories(
 add_executable(run_tests
     test_main.cpp
 
+    http_router_test.cpp
     http_uri_parser_test.cpp
     path_normalize_test.cpp
+    string_trie_test.cpp
 )
 
 target_link_libraries(run_tests
