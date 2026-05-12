@@ -102,6 +102,7 @@ function prepare_dirs() {
 
   if $CLEAN; then
     rm -rf "${BUILD_SUBDIR}"
+    rm -rf "${STAGING_DIR}"
   fi
 
   rm -f "${PROJECT_NAME}.tar.gz"

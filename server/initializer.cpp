@@ -48,7 +48,7 @@ static json parse_from_file(const char* path)
 bool Initializer::init()
 {
     return init_spdlog() &&
-               parse_global_config() &&
+               parse_settings() &&
                    parse_http_handler_config();
 }
 
@@ -81,7 +81,7 @@ bool Initializer::init_spdlog()
     return true;
 }
 
-bool Initializer::parse_global_config()
+bool Initializer::parse_settings()
 {
     fs::path cfg = fs::path(CONF_PREFIX) / fs::path(GLOBAL_CONFIG_FILE);
 

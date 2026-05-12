@@ -2,10 +2,14 @@
 
 #include "http_helper.h"
 
+#include "rtlib/path_normalize.h"
 #include "rtlib/tokenize.h"
 
 #include <algorithm>
+
 #include <boost/algorithm/string.hpp>
+
+#include <spdlog/spdlog.h>
 
 using namespace std;
 using boost::join;
@@ -55,21 +59,21 @@ bool HTTP_URI_Parser::parse_path(HTTP_URI& uri)
           uri.raw_path,
           boost::is_any_of("/"));
 
-    string decoded;
-    for (auto& path : segments) {
-        if (!hlpr::decode_path(path.c_str(),
-                               path.size(),
-                               decoded)) {
-            // Trace
+    for (auto& seg : segments) {
+        string decoded_seg;
+
+        if (!hlpr::decode_path(seg.c_str(),
+                               seg.size(),
+                               decoded_seg)) {
+            spdlog::trace("Failed to decode seg '{}' ...", seg);
         }
 
-        path = std::move(decoded);
+        seg = std::move(decoded_seg);
     }
 
     uri.decoded_path = join(segments, "/");
 
-    /// TODO:
-    /// Normalize ...
+    path_normalize(uri.decoded_path, '/');
 
     return true;
 }
