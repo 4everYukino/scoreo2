@@ -8,6 +8,7 @@ include_directories(
 add_executable(run_tests
     test_main.cpp
 
+    http_router_matching_test.cpp
     http_uri_parser_test.cpp
     path_normalize_test.cpp
 )

@@ -4,7 +4,7 @@
 #include "http_helper.h"
 #include "http_uri_parser.h"
 
-#include <spdlog/spdlog.h>
+#include <boost/algorithm/string/predicate.hpp>
 
 using namespace std;
 
@@ -23,19 +23,49 @@ HTTP_Response HTTP_Router::dispatch(const HTTP_Request& req)
         return hlpr::bad_request(req.keep_alive());
     }
 
-    spdlog::trace("Received request uri '{}', decoded '{}' ...", uri.raw_path, uri.decoded_path);
-
     /// TODO:
     ///   * Layered Routing
 
-    const auto it = routes_.find(uri.decoded_path);
-    if (it == routes_.end()) {
-        return hlpr::not_found(req.keep_alive());
-    }
-
-    auto h = HTTP_Handler_Factory::instance()->create(it->second);
-    if (!h)
+    auto handler = find_handler(uri.decoded_path);
+    if (!handler)
         return hlpr::internal_server_error(req.keep_alive());
 
-    return h->handle_request(req);
+    return handler->handle_request(req);
+}
+
+unique_ptr<HTTP_Handler> HTTP_Router::find_handler(const string& path)
+{
+    unique_ptr<HTTP_Handler> res;
+
+    if (path.empty() || !boost::algorithm::starts_with(path, "/"))
+        return res;
+
+    string handler_name;
+
+    size_t len = path.length();
+    while (true) {
+        string key = path.substr(0, len);
+        const auto it = routes_.find(key);
+        if (it != routes_.end()) {
+            handler_name = it->second;
+            break;
+        }
+
+        if (len == 1)
+            break;
+
+        size_t last_slash = path.rfind('/', len - 1);
+        if (last_slash == string::npos)
+            break;
+
+        if (last_slash == 0) {
+            len = 1; ///< Try "/"
+        } else {
+            len = last_slash;
+        }
+    }
+
+    res = HTTP_Handler_Factory::instance()->create(handler_name);
+
+    return res;
 }

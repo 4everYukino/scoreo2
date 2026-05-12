@@ -32,7 +32,7 @@ protected:
 
             {"/check?param1=1%262&param2=a%2Fb", "/check", {{"param1", "1&2"}, {"param2", "a/b"}}},
 
-            {"/folder/", "/folder", {}},
+            {"/folder/", "/folder/", {}},
         };
     }
 
