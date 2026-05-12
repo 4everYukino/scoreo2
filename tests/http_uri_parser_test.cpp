@@ -32,7 +32,7 @@ protected:
 
             {"/check?param1=1%262&param2=a%2Fb", "/check", {{"param1", "1&2"}, {"param2", "a/b"}}},
 
-            {"/folder/", "/folder/", {}},
+            {"/folder/", "/folder", {}},
         };
     }
 
@@ -74,14 +74,14 @@ private:
     HTTP_URI_Parser parser;
 };
 
-TEST_F(HTTP_URI_Parser_Fixture, common)
+TEST_F(HTTP_URI_Parser_Fixture, CommonCases)
 {
     for (const auto& i : common_cases()) {
         run(i);
     }
 }
 
-TEST_F(HTTP_URI_Parser_Fixture, edge)
+TEST_F(HTTP_URI_Parser_Fixture, EdgeCases)
 {
     for (const auto& i : edge_cases()) {
         run(i);

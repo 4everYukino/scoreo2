@@ -18,11 +18,20 @@ add_library(process SHARED
 
 target_link_libraries(process PRIVATE spdlog)
 
-add_executable(aps_solver
-    aps_solver.cpp
-)
-
-install(TARGETS process aps_solver
+install(TARGETS process
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
+
+OPTION(ENABLE_APS_SOLVER "Enable to build APS Solver" OFF)
+
+if (ENABLE_APS_SOLVER)
+    add_executable(aps_solver
+        aps_solver.cpp
+    )
+
+    install(TARGETS aps_solver
+            RUNTIME DESTINATION bin
+            LIBRARY DESTINATION lib
+            ARCHIVE DESTINATION lib)
+endif()

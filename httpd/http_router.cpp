@@ -23,6 +23,8 @@ HTTP_Response HTTP_Router::dispatch(const HTTP_Request& req)
         return hlpr::bad_request(req.keep_alive());
     }
 
+    spdlog::trace("Received request uri '{}', decoded '{}' ...", uri.raw_path, uri.decoded_path);
+
     /// TODO:
     ///   * Layered Routing
 

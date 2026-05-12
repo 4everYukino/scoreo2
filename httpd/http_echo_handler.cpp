@@ -26,28 +26,28 @@ static HTTP_String_Response make_echo_response(const HTTP_Request& req)
 
     ostringstream oss;
 
-    oss << "[Scoreo2] Parsed HTTP request:" << '\n'
-        << "    Method: " << req.method_string() << '\n'
-        << "    Target: " << req.target() << '\n'
-        << "    Path: " << uri.decoded_path << '\n';
+    oss << "[Scoreo2]" << "Parsed HTTP request:" << '\n'
+        << "[Scoreo2]" << "    Method: " << req.method_string() << '\n'
+        << "[Scoreo2]" << "    Target: " << req.target() << '\n'
+        << "[Scoreo2]" << "    Path: " << uri.decoded_path << '\n';
 
     if (!uri.raw_query.empty()) {
-        oss << "    Query: " << uri.raw_query << '\n';
+        oss << "[Scoreo2]" << "    Query: " << uri.raw_query << '\n';
     }
 
     if (!uri.query_params.empty()) {
-        oss << "    Query params:" << '\n';
+        oss << "[Scoreo2]" << "    Query params:" << '\n';
         for (const auto& [key, value] : uri.query_params) {
-            oss << "        " << key << " = " << value << '\n';
+            oss << "[Scoreo2]" << "        " << key << " = " << value << '\n';
         }
     }
 
-    oss << "    Headers:\n";
+    oss << "[Scoreo2]" << "    Headers:\n";
     for (const auto& field : req) {
-        oss << "        " << field.name_string() << ": " << field.value() << '\n';
+        oss << "[Scoreo2]" << "        " << field.name_string() << ": " << field.value() << '\n';
     }
 
-    oss << "    Body:" << '\n'
+    oss << "[Scoreo2]" << "    Body:" << '\n'
         << beast::buffers_to_string(req.body().data())
         << '\n';
 
