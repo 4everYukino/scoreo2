@@ -4,9 +4,8 @@
 #include <boost/beast/http/message_generator.hpp>
 #include <boost/beast/http.hpp>
 
-namespace beast = boost::beast;
+using HTTP_Response = boost::beast::http::message_generator;
 
-using HTTP_Response = beast::http::message_generator;
-using HTTP_String_Response = beast::http::response<beast::http::string_body>;
+using HTTP_String_Response = boost::beast::http::response<boost::beast::http::string_body>;
 
 #endif

@@ -24,6 +24,9 @@ public:
     HTTP_Response dispatch(const HTTP_Request& req);
 
 private:
+    std::unique_ptr<HTTP_Handler> find_handler(const std::string& path);
+
+private:
     /// Path -> HTTP Handler Name
     std::map<std::string, std::string> routes_;
 };
