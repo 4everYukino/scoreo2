@@ -1,0 +1,14 @@
+#!/bin/sh
+set -e
+
+service_name='@PRODUCT_NAME@.service'
+
+if [ "$1" = remove ] && [ -d /run/systemd/system ]; then
+    systemctl --system daemon-reload >/dev/null || true
+fi
+
+if [ "$1" = purge ] && command -v deb-systemd-helper >/dev/null 2>&1; then
+    deb-systemd-helper purge "$service_name" >/dev/null || true
+fi
+
+exit 0

@@ -1,5 +1,6 @@
 #include "http_acceptor.h"
 
+#include "config.h"
 #include "http_session.h"
 
 #include <boost/beast/core/tcp_stream.hpp>
@@ -32,7 +33,7 @@ void HTTP_Acceptor::run()
 void HTTP_Acceptor::close()
 {
     if (acceptor_.is_open()) {
-        spdlog::debug("Closing scoreo2 HTTP acceptor ...");
+        spdlog::debug("Closing {} HTTP acceptor ...", PROJECT_NAME);
         acceptor_.close();
     }
 }

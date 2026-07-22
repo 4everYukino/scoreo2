@@ -1,0 +1,2 @@
+@PRODUCT_CONF_DIR@/@PRODUCT_NAME@.conf
+@PRODUCT_CONF_DIR@/handler.conf

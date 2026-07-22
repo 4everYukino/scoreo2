@@ -1,20 +1,20 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define PROJECT_NAME "@PROJECT_NAME@"
+#define PROJECT_NAME "@PRODUCT_NAME@"
 
-#define OPT_PREFIX "@OPT_PREFIX@"
-#define BIN_DIR OPT_PREFIX "/" "bin"
-#define LIB_DIR OPT_PREFIX "/" "lib"
+#define INSTALL_PREFIX "/@PRODUCT_INSTALL_ROOT@"
+#define BIN_DIR "@PRODUCT_BIN_DIR@"
+#define LIB_DIR "@PRODUCT_LIB_DIR@"
 
 /// Config {
-#define CONF_PREFIX "@CONF_PREFIX@"
+#define CONF_PREFIX "@PRODUCT_CONF_DIR@"
 
 #define GLOBAL_CONFIG_FILE PROJECT_NAME ".conf"
 
 #define HANDLER_CONFIG_FILE "handler.conf"
 /// }
 
-#define LOG_PREFIX "@PRODUCT_LOG_PREFIX@"
+#define LOG_PREFIX "@PRODUCT_LOG_DIR@"
 
 #endif

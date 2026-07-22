@@ -1,0 +1,13 @@
+[Unit]
+Description=@PRODUCT_NAME@
+After=network.target
+
+[Service]
+ExecStart=@PRODUCT_BIN_DIR@/@PRODUCT_NAME@
+Restart=on-failure
+User=root
+WorkingDirectory=/@PRODUCT_INSTALL_ROOT@
+LogsDirectory=@PRODUCT_NAME@
+
+[Install]
+WantedBy=multi-user.target

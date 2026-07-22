@@ -1,5 +1,3 @@
-project(process)
-
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -18,12 +16,13 @@ add_library(process SHARED
 
 target_link_libraries(process PRIVATE spdlog)
 
-install(TARGETS process
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+set_target_properties(process PROPERTIES
+        INSTALL_RPATH "$ORIGIN")
 
-OPTION(ENABLE_APS_SOLVER "Enable to build APS Solver" OFF)
+install(TARGETS process
+        RUNTIME DESTINATION "${PRODUCT_INSTALL_ROOT}" COMPONENT Runtime
+        LIBRARY DESTINATION "${PRODUCT_INSTALL_ROOT}" COMPONENT Runtime
+        ARCHIVE DESTINATION "${PRODUCT_INSTALL_ROOT}" COMPONENT Runtime)
 
 if (ENABLE_APS_SOLVER)
     add_executable(aps_solver
@@ -31,7 +30,7 @@ if (ENABLE_APS_SOLVER)
     )
 
     install(TARGETS aps_solver
-            RUNTIME DESTINATION bin
-            LIBRARY DESTINATION lib
-            ARCHIVE DESTINATION lib)
+            RUNTIME DESTINATION "${PRODUCT_INSTALL_ROOT}" COMPONENT Runtime
+            LIBRARY DESTINATION "${PRODUCT_INSTALL_ROOT}" COMPONENT Runtime
+            ARCHIVE DESTINATION "${PRODUCT_INSTALL_ROOT}" COMPONENT Runtime)
 endif()

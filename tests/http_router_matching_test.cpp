@@ -156,7 +156,7 @@ TEST_F(HTTP_Router_Matching_Fixture, QueryStringDoesNotAffectRouteSelection)
 
 TEST_F(HTTP_Router_Matching_Fixture, FallsBackToNearestPathSegmentPrefix)
 {
-    EXPECT_EQ("v1", dispatch_body_for(route_path("/api/v1/projects/scoreo2")));
+    EXPECT_EQ("v1", dispatch_body_for(route_path("/api/v1/projects/example")));
 }
 
 TEST_F(HTTP_Router_Matching_Fixture, DoesNotMatchPartialPathSegment)

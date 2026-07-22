@@ -1,5 +1,3 @@
-project(httpd)
-
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -19,7 +17,10 @@ add_library(httpd SHARED
 
 target_link_libraries(httpd PRIVATE spdlog)
 
+set_target_properties(httpd PROPERTIES
+        INSTALL_RPATH "$ORIGIN")
+
 install(TARGETS httpd
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+        RUNTIME DESTINATION "${PRODUCT_INSTALL_ROOT}" COMPONENT Runtime
+        LIBRARY DESTINATION "${PRODUCT_INSTALL_ROOT}" COMPONENT Runtime
+        ARCHIVE DESTINATION "${PRODUCT_INSTALL_ROOT}" COMPONENT Runtime)
