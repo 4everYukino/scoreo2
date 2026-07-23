@@ -1,0 +1,29 @@
+#!/bin/sh
+set -e
+
+service_name='@PRODUCT_NAME@.service'
+
+if [ "$1" = configure ] || [ "$1" = abort-upgrade ] || \
+   [ "$1" = abort-deconfigure ] || [ "$1" = abort-remove ]; then
+    deb-systemd-helper unmask "$service_name" >/dev/null || true
+
+    if deb-systemd-helper --quiet was-enabled "$service_name"; then
+        deb-systemd-helper enable "$service_name" >/dev/null || true
+    else
+        deb-systemd-helper update-state "$service_name" >/dev/null || true
+    fi
+
+    if [ -z "${DPKG_ROOT:-}" ] && [ -d /run/systemd/system ]; then
+        systemctl --system daemon-reload >/dev/null || true
+
+        if [ -n "${2:-}" ]; then
+            service_action=restart
+        else
+            service_action=start
+        fi
+
+        deb-systemd-invoke "$service_action" "$service_name" >/dev/null || true
+    fi
+fi
+
+exit 0

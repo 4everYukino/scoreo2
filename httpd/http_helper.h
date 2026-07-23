@@ -1,6 +1,8 @@
 #ifndef HTTP_HELPER_H
 #define HTTP_HELPER_H
 
+#include "config.h"
+
 #include "http_request.h"
 #include "http_response.h"
 
@@ -36,7 +38,7 @@ void init_response(boost::beast::http::response<Body>& res, bool keep_alive)
 {
     res.version(11); ///< HTTP/1.1
     res.keep_alive(keep_alive);
-    res.set("Server", "scoreo2");
+    res.set("Server", PROJECT_NAME);
 }
 
 HTTP_Response stock_response(boost::beast::http::status status,

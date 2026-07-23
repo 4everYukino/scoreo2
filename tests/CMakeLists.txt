@@ -1,5 +1,3 @@
-project(tests)
-
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -21,5 +19,5 @@ target_link_libraries(run_tests
         httpd
 )
 
-enable_testing()
-add_test(NAME ALL_TESTS COMMAND run_tests)
+include(GoogleTest)
+gtest_discover_tests(run_tests)

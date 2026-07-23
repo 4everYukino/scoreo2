@@ -1,6 +1,8 @@
 #ifndef CURL_REQUEST_H
 #define CURL_REQUEST_H
 
+#include "config.h"
+
 #include <string>
 #include <vector>
 
@@ -28,7 +30,7 @@ struct CURL_Request
     bool verify_ssl_peer = true;
     bool verify_ssl_host = true;
 
-    std::string user_agent = "scoreo2";
+    std::string user_agent = PROJECT_NAME;
 };
 
 #endif
