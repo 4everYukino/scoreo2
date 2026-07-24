@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 
 # The product name is defined here and nowhere else in the build system.
 # It can also be overridden with -DPRODUCT_NAME=<name> on a fresh configure.
-set(PRODUCT_NAME "scoreo2" CACHE STRING "Product name")
+set(PRODUCT_NAME "inks" CACHE STRING "Product name")
 
 if(NOT PRODUCT_NAME MATCHES "^[a-z0-9][a-z0-9+.-]+$")
     message(FATAL_ERROR
@@ -146,7 +146,7 @@ set(CPACK_DEBIAN_PACKAGE_SECTION "web")
 set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 set(CPACK_DEBIAN_PACKAGE_RELEASE "1")
 set(CPACK_DEBIAN_FILE_NAME "DEB-DEFAULT")
-set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://github.com/4everYukino/scoreo2")
+set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://github.com/4everYukino/inks")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "init-system-helpers (>= 1.18~)")
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 set(CPACK_DEBIAN_PACKAGE_CONTROL_STRICT_PERMISSION ON)
