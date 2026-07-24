@@ -5,7 +5,7 @@
 #include "http_uri_parser.h"
 #include "http_handler_factory.h"
 
-#include "rtlib/string_sprintf.h"
+#include "foundation/string_sprintf.h"
 
 #include <sstream>
 
@@ -26,32 +26,32 @@ static HTTP_String_Response make_echo_response(const HTTP_Request& req)
 
     ostringstream oss;
 
-    oss << "[Scoreo2]" << " Parsed HTTP request:" << '\n'
-        << "[Scoreo2]" << "   Method: " << req.method_string() << '\n'
-        << "[Scoreo2]" << "   Target: " << req.target() << '\n'
-        << "[Scoreo2]" << "   Path: " << uri.decoded_path << '\n';
+    oss << "[inks]" << " Parsed HTTP request:" << '\n'
+        << "[inks]" << "   Method: " << req.method_string() << '\n'
+        << "[inks]" << "   Target: " << req.target() << '\n'
+        << "[inks]" << "   Path: " << uri.decoded_path << '\n';
 
     if (!uri.raw_query.empty()) {
-        oss << "[Scoreo2]" << "   Query: " << uri.raw_query << '\n';
+        oss << "[inks]" << "   Query: " << uri.raw_query << '\n';
     }
 
     if (!uri.query_params.empty()) {
-        oss << "[Scoreo2]" << "   Query params:" << '\n';
+        oss << "[inks]" << "   Query params:" << '\n';
         for (const auto& [key, value] : uri.query_params) {
-            oss << "[Scoreo2]" << "     " << key << " = " << value << '\n';
+            oss << "[inks]" << "     " << key << " = " << value << '\n';
         }
     }
 
-    oss << "[Scoreo2]" << "   Headers:\n";
+    oss << "[inks]" << "   Headers:\n";
     for (const auto& field : req) {
-        oss << "[Scoreo2]" << "     " << field.name_string() << ": " << field.value() << '\n';
+        oss << "[inks]" << "     " << field.name_string() << ": " << field.value() << '\n';
     }
 
-    oss << "[Scoreo2]" << "   Body:" << '\n'
+    oss << "[inks]" << "   Body:" << '\n'
         << beast::buffers_to_string(req.body().data())
         << '\n';
 
-    oss << "[Scoreo2]" << " End.";
+    oss << "[inks]" << " End.";
 
     HTTP_String_Response res{http::status::ok, 11};
     hlpr::init_response(res, req.keep_alive());

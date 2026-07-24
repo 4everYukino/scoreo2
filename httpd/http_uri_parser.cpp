@@ -2,8 +2,8 @@
 
 #include "http_helper.h"
 
-#include "rtlib/path_normalize.h"
-#include "rtlib/tokenize.h"
+#include "foundation/path_normalize.h"
+#include "foundation/tokenize.h"
 
 #include <algorithm>
 

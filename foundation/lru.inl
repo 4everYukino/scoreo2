@@ -1,5 +1,3 @@
-#include "lru.h"
-
 template <typename Key, typename Value>
 LRU<Key, Value>::LRU(std::size_t cap)
     : capacity_(cap)

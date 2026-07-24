@@ -17,11 +17,11 @@
       }
     },
     {
-      "name": "ci",
-      "displayName": "CI Debug",
-      "description": "Configure the Debug build used by GitHub Actions",
+      "name": "debug",
+      "displayName": "Debug",
+      "description": "Configure a Debug build with tests enabled",
       "inherits": "release",
-      "binaryDir": "${sourceDir}/build/ci",
+      "binaryDir": "${sourceDir}/build/debug",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
@@ -34,8 +34,8 @@
       "jobs": 4
     },
     {
-      "name": "ci",
-      "configurePreset": "ci",
+      "name": "debug",
+      "configurePreset": "debug",
       "jobs": 4
     }
   ],
@@ -48,8 +48,8 @@
       }
     },
     {
-      "name": "ci",
-      "configurePreset": "ci",
+      "name": "debug",
+      "configurePreset": "debug",
       "output": {
         "outputOnFailure": true
       }
@@ -61,8 +61,8 @@
       "configurePreset": "release"
     },
     {
-      "name": "ci",
-      "configurePreset": "ci"
+      "name": "debug",
+      "configurePreset": "debug"
     }
   ],
   "workflowPresets": [
@@ -89,24 +89,24 @@
       ]
     },
     {
-      "name": "ci",
-      "displayName": "CI: configure, build, test and package",
+      "name": "debug",
+      "displayName": "Debug: configure, build, test and package",
       "steps": [
         {
           "type": "configure",
-          "name": "ci"
+          "name": "debug"
         },
         {
           "type": "build",
-          "name": "ci"
+          "name": "debug"
         },
         {
           "type": "test",
-          "name": "ci"
+          "name": "debug"
         },
         {
           "type": "package",
-          "name": "ci"
+          "name": "debug"
         }
       ]
     }
